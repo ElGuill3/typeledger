@@ -13,6 +13,7 @@ python.install_sources(
     'core/__init__.py',
     'core/engine.py',
     'core/models.py',
+    'core/storage.py',
     'core/textgen.py',
   ),
   subdir: 'typeledger/core',
