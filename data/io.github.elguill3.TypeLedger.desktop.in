@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=TypeLedger
+Comment=Typing practice for split ergonomic keyboards
+Exec=typeledger
+Icon=io.github.elguill3.TypeLedger
+Terminal=false
+Type=Application
+Categories=Education;Utility;
+Keywords=typing;keyboard;corne;practice;
+StartupNotify=true

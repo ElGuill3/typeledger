@@ -1,0 +1,10 @@
+#!@PYTHON@
+import os
+import sys
+
+sys.path.insert(1, '@PYTHONDIR@')
+os.environ.setdefault('TYPELEDGER_LOCALEDIR', '@LOCALEDIR@')
+
+from typeledger.application import main
+
+sys.exit(main())
