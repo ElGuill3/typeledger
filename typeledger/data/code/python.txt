@@ -1,0 +1,85 @@
+#! TypeLedger Python snippets: separated by "---" lines, 4-space indentation.
+def mean(values):
+    if not values:
+        return 0.0
+    return sum(values) / len(values)
+---
+class Counter:
+    def __init__(self):
+        self.count = 0
+    def increment(self, step=1):
+        self.count += step
+        return self.count
+---
+with open(path, encoding="utf-8") as handle:
+    for number, line in enumerate(handle, start=1):
+        if line.startswith("#"):
+            continue
+        print(f"{number}: {line.rstrip()}")
+---
+squares = {n: n * n for n in range(10)}
+evens = [n for n in squares if n % 2 == 0]
+total = sum(squares[n] for n in evens)
+---
+def parse_port(text):
+    try:
+        port = int(text)
+    except ValueError:
+        raise ValueError(f"not a number: {text!r}")
+    if not 0 < port < 65536:
+        raise ValueError(f"out of range: {port}")
+    return port
+---
+@dataclass(frozen=True)
+class Point:
+    x: float
+    y: float
+    def scaled(self, factor):
+        return Point(self.x * factor, self.y * factor)
+---
+def chunks(items, size):
+    for start in range(0, len(items), size):
+        yield items[start:start + size]
+---
+words = text.lower().split()
+counts = {}
+for word in words:
+    counts[word] = counts.get(word, 0) + 1
+top = sorted(counts.items(), key=lambda kv: -kv[1])[:5]
+---
+def load_config(path: Path) -> dict:
+    if not path.exists():
+        return {"theme": "dark", "volume": 7}
+    return json.loads(path.read_text())
+---
+def retry(action, attempts=3):
+    for attempt in range(attempts):
+        try:
+            return action()
+        except OSError as error:
+            last_error = error
+    raise last_error
+---
+async def fetch_all(client, urls):
+    tasks = [client.get(url) for url in urls]
+    responses = await asyncio.gather(*tasks)
+    return [r.status for r in responses]
+---
+def is_palindrome(text: str) -> bool:
+    letters = [c.lower() for c in text if c.isalnum()]
+    return letters == letters[::-1]
+---
+while queue:
+    node = queue.popleft()
+    if node in seen:
+        continue
+    seen.add(node)
+    queue.extend(graph[node])
+---
+match command.split():
+    case ["go", direction]:
+        move(direction)
+    case ["take", item]:
+        inventory.append(item)
+    case _:
+        print("unknown command")

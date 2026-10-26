@@ -6,9 +6,9 @@ from gi.repository import Adw, Gdk, GLib, GObject, Gtk
 from typeledger.core.keys import special_key_name
 from typeledger.core.layout import available_layouts
 from typeledger.core.models import (
-    LANGUAGES,
     MODE_TIME,
     MODE_WORDS,
+    TEXT_SOURCES,
     TIME_OPTIONS,
     WORD_OPTIONS,
 )
@@ -31,7 +31,15 @@ def default_language():
 
 
 def language_names():
-    return {"en": _("English"), "es": _("Spanish")}
+    # Programming language names are not translated.
+    return {
+        "en": _("English"),
+        "es": _("Spanish"),
+        "python": "Python",
+        "javascript": "JavaScript",
+        "rust": "Rust",
+        "go": "Go",
+    }
 
 
 class PracticePage(Gtk.Box):
@@ -99,7 +107,7 @@ class PracticePage(Gtk.Box):
 
         names = language_names()
         self.language_dropdown = Gtk.DropDown.new_from_strings(
-            [names[code] for code in LANGUAGES]
+            [names[code] for code in TEXT_SOURCES]
         )
         self.language_dropdown.set_tooltip_text(_("Text language"))
         self.language_dropdown.connect("notify::selected", self._on_option_changed)
@@ -135,7 +143,7 @@ class PracticePage(Gtk.Box):
         self._updating_options = True
         self.mode_group.set_active_name(settings.mode)
         self._fill_values(settings.mode, settings.mode_value)
-        self.language_dropdown.set_selected(LANGUAGES.index(settings.language))
+        self.language_dropdown.set_selected(TEXT_SOURCES.index(settings.language))
         layout_ids = [layout_id for layout_id, _name in self._layouts]
         self.layout_dropdown.set_selected(layout_ids.index(settings.layout_id))
         self._updating_options = False
@@ -152,7 +160,7 @@ class PracticePage(Gtk.Box):
         if self._updating_options or self.value_group.get_active_name() is None:
             return
         settings = PracticeSettings(
-            language=LANGUAGES[self.language_dropdown.get_selected()],
+            language=TEXT_SOURCES[self.language_dropdown.get_selected()],
             mode=self.mode_group.get_active_name(),
             mode_value=int(self.value_group.get_active_name()),
             layout_id=self._layouts[self.layout_dropdown.get_selected()][0],
@@ -214,7 +222,8 @@ class PracticePage(Gtk.Box):
             remaining = max(0, practice.settings.mode_value - int(session.elapsed()))
             progress = _("{seconds} s").format(seconds=remaining)
         else:
-            typed_words = session.target[: session.position].count(" ")
+            typed = session.target[: session.position]
+            typed_words = len(typed.split()) if practice.is_code else typed.count(" ")
             progress = f"{typed_words}/{practice.settings.mode_value}"
         accuracy = session.live_accuracy() if session.keystrokes else 1.0
         self.stats_label.set_label(
@@ -281,6 +290,9 @@ class PracticePage(Gtk.Box):
         pressed = []
         for char in text:
             pressed.extend(self.practice.layout.keys_for_char(char))
+        self._type(text, pressed)
+
+    def _type(self, text, pressed):
         completed = self.practice.type_text(text)
         self._flash(pressed)
         self.refresh()
@@ -291,7 +303,11 @@ class PracticePage(Gtk.Box):
         name = special_key_name(Gdk.keyval_name(keyval))
         if name is None:
             return False
-        self._flash(self.practice.layout.keys_for_special(name))
+        keys = self.practice.layout.keys_for_special(name)
+        if name == "enter" and self.practice.is_code:
+            self._type("\n", keys)
+            return True
+        self._flash(keys)
         if name == "backspace":
             self.practice.backspace()
             self.refresh()

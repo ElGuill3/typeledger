@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable
 
-from typeledger.core.models import LANGUAGES, MODE_TIME, MODE_WORDS, CharStat, SessionResult
+from typeledger.core.models import MODE_TIME, MODE_WORDS, TEXT_SOURCES, CharStat, SessionResult
 
 APP_DIR_NAME = "typeledger"
 DB_FILE_NAME = "typeledger.db"
@@ -98,7 +98,7 @@ def _validate(result: SessionResult) -> None:
     _check_count("mode_value", result.mode_value)
     if result.mode_value == 0:
         raise ValueError("mode_value must be positive")
-    if result.language not in LANGUAGES:
+    if result.language not in TEXT_SOURCES:
         raise ValueError(f"unknown language {result.language!r}")
     if not isinstance(result.layout_id, str) or not result.layout_id:
         raise ValueError("layout_id must be a non-empty string")

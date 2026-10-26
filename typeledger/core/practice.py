@@ -7,13 +7,15 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime
 
+from typeledger.core.codegen import generate_code
 from typeledger.core.engine import TypingSession
 from typeledger.core.layout import KeyboardLayout, load_layout
-from typeledger.core.models import MODE_TIME, SessionResult
+from typeledger.core.models import CODE_LANGUAGES, MODE_TIME, SessionResult
 from typeledger.core.storage import Storage
 from typeledger.core.textgen import generate_text
 
 # Time mode starts with this many words and appends more as the cursor nears the end.
+# For code, words are whitespace-separated tokens rounded up to whole snippets.
 TIME_MODE_INITIAL_WORDS = 60
 TIME_MODE_EXTRA_WORDS = 30
 TIME_MODE_EXTEND_MARGIN = 40
@@ -55,16 +57,21 @@ class Practice:
             else self.settings.mode_value
         )
         self.session = TypingSession(
-            generate_text(self.settings.language, word_count, rng=self._rng),
+            self._generate(word_count),
             mode=self.settings.mode,
             mode_value=self.settings.mode_value,
             language=self.settings.language,
             layout_id=self.settings.layout_id,
             clock=self._clock,
             now=self._now,
+            auto_indent=self.is_code,
         )
         self.last_result: SessionResult | None = None
         self.save_error: Exception | None = None
+
+    @property
+    def is_code(self) -> bool:
+        return self.settings.language in CODE_LANGUAGES
 
     def cancel(self) -> None:
         """Discard the current session without saving and start a fresh one."""
@@ -128,7 +135,10 @@ class Practice:
             return
         remaining = len(self.session.target) - self.session.position
         if remaining < TIME_MODE_EXTEND_MARGIN:
-            extra = generate_text(
-                self.settings.language, TIME_MODE_EXTRA_WORDS, rng=self._rng
-            )
-            self.session.extend(" " + extra)
+            separator = "\n\n" if self.is_code else " "
+            self.session.extend(separator + self._generate(TIME_MODE_EXTRA_WORDS))
+
+    def _generate(self, word_count: int) -> str:
+        if self.is_code:
+            return generate_code(self.settings.language, word_count, rng=self._rng)
+        return generate_text(self.settings.language, word_count, rng=self._rng)

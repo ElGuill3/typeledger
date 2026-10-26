@@ -11,6 +11,7 @@ python.install_sources(
 python.install_sources(
   files(
     'core/__init__.py',
+    'core/codegen.py',
     'core/engine.py',
     'core/keys.py',
     'core/layout.py',
@@ -30,6 +31,16 @@ python.install_sources(
     'data/words/es.txt',
   ),
   subdir: 'typeledger/data/words',
+)
+
+python.install_sources(
+  files(
+    'data/code/go.txt',
+    'data/code/javascript.txt',
+    'data/code/python.txt',
+    'data/code/rust.txt',
+  ),
+  subdir: 'typeledger/data/code',
 )
 
 python.install_sources(

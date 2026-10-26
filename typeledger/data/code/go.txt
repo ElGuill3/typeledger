@@ -1,0 +1,95 @@
+#! TypeLedger Go snippets: separated by "---" lines. gofmt uses tabs; these use
+#! 4 spaces so that indentation stays simple to type (it is filled automatically).
+func Max(values []int) int {
+    best := values[0]
+    for _, v := range values[1:] {
+        if v > best {
+            best = v
+        }
+    }
+    return best
+}
+---
+type User struct {
+    Name  string `json:"name"`
+    Email string `json:"email"`
+    Admin bool   `json:"admin"`
+}
+---
+f, err := os.Open(path)
+if err != nil {
+    return fmt.Errorf("open %s: %w", path, err)
+}
+defer f.Close()
+---
+func (s *Stack) Push(v int) {
+    s.items = append(s.items, v)
+}
+---
+func (s *Stack) Pop() int {
+    v := s.items[len(s.items)-1]
+    s.items = s.items[:len(s.items)-1]
+    return v
+}
+---
+counts := make(map[string]int)
+for _, word := range strings.Fields(text) {
+    counts[strings.ToLower(word)]++
+}
+---
+results := make(chan int)
+for _, n := range numbers {
+    go func(n int) {
+        results <- n * n
+    }(n)
+}
+---
+type Shape interface {
+    Area() float64
+    Perimeter() float64
+}
+---
+switch {
+case score >= 90:
+    grade = "A"
+case score >= 75:
+    grade = "B"
+default:
+    grade = "C"
+}
+---
+var wg sync.WaitGroup
+for i := 0; i < 4; i++ {
+    wg.Add(1)
+    go worker(i, &wg)
+}
+wg.Wait()
+---
+func handler(w http.ResponseWriter, r *http.Request) {
+    name := r.URL.Query().Get("name")
+    if name == "" {
+        name = "world"
+    }
+    fmt.Fprintf(w, "hello, %s\n", name)
+}
+---
+select {
+case msg := <-messages:
+    log.Println("got", msg)
+case <-time.After(2 * time.Second):
+    log.Println("timeout")
+}
+---
+func Reverse(s string) string {
+    r := []rune(s)
+    for i, j := 0, len(r)-1; i < j; i, j = i+1, j-1 {
+        r[i], r[j] = r[j], r[i]
+    }
+    return string(r)
+}
+---
+const (
+    StatusIdle = iota
+    StatusRunning
+    StatusDone
+)

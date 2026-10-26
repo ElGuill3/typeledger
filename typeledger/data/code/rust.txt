@@ -1,0 +1,96 @@
+#! TypeLedger Rust snippets: separated by "---" lines, 4-space indentation.
+fn gcd(mut a: u64, mut b: u64) -> u64 {
+    while b != 0 {
+        let t = b;
+        b = a % b;
+        a = t;
+    }
+    a
+}
+---
+#[derive(Debug, Clone, PartialEq)]
+struct Point {
+    x: f64,
+    y: f64,
+}
+---
+impl Point {
+    fn distance(&self, other: &Point) -> f64 {
+        let dx = self.x - other.x;
+        let dy = self.y - other.y;
+        (dx * dx + dy * dy).sqrt()
+    }
+}
+---
+enum Shape {
+    Circle(f64),
+    Rect { w: f64, h: f64 },
+}
+---
+fn area(shape: &Shape) -> f64 {
+    match shape {
+        Shape::Circle(r) => 3.14159 * r * r,
+        Shape::Rect { w, h } => w * h,
+    }
+}
+---
+let evens: Vec<u32> = (1..=20)
+    .filter(|n| n % 2 == 0)
+    .map(|n| n * n)
+    .collect();
+---
+fn parse_age(text: &str) -> Result<u8, String> {
+    let age: u8 = text
+        .trim()
+        .parse()
+        .map_err(|e| format!("bad age: {e}"))?;
+    Ok(age)
+}
+---
+let mut counts: HashMap<&str, usize> = HashMap::new();
+for word in text.split_whitespace() {
+    *counts.entry(word).or_insert(0) += 1;
+}
+---
+if let Some(first) = names.first() {
+    println!("first: {first}");
+} else {
+    println!("no names");
+}
+---
+trait Greet {
+    fn name(&self) -> String;
+    fn greet(&self) -> String {
+        format!("Hello, {}!", self.name())
+    }
+}
+---
+fn longest<'a>(a: &'a str, b: &'a str) -> &'a str {
+    if a.len() >= b.len() {
+        a
+    } else {
+        b
+    }
+}
+---
+let handle = std::thread::spawn(move || {
+    let sum: u64 = data.iter().sum();
+    sum
+});
+let total = handle.join().unwrap();
+---
+for (index, line) in input.lines().enumerate() {
+    if line.is_empty() {
+        continue;
+    }
+    println!("{:>3}: {}", index + 1, line);
+}
+---
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn gcd_of_primes_is_one() {
+        assert_eq!(gcd(13, 7), 1);
+    }
+}
