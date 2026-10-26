@@ -63,7 +63,7 @@ def _auto_ticks(values, minimum, maximum):
 
 
 class ChartView(Gtk.DrawingArea):
-    """Line chart of one value per day; None values are gaps in the line."""
+    """Line chart of evenly spaced (date, value) points; None values are gaps in the line."""
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -161,7 +161,7 @@ class ChartView(Gtk.DrawingArea):
                 return (inner_left + inner_right) / 2
             return inner_left + index * (inner_right - inner_left) / (count - 1)
 
-        # Day labels: first, last, and a middle one for longer ranges.
+        # Date labels: first, last, and a middle one for longer ranges.
         indexes = sorted({0, count - 1} | ({count // 2} if count >= MIDDLE_LABEL_MIN_POINTS else set()))
         cr.set_source_rgba(fg.red, fg.green, fg.blue, 0.7 * fg.alpha)
         for index in indexes:

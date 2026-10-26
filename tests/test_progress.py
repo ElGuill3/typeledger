@@ -8,9 +8,9 @@ from typeledger.core.progress import (
     Streak,
     char_error_rates,
     compute_streak,
-    daily_summaries,
     key_heat,
     overview,
+    sessions_in_range,
 )
 
 LOCAL = timezone(timedelta(hours=-3))
@@ -72,35 +72,31 @@ class StreakTest(unittest.TestCase):
         self.assertEqual(overview([late], TODAY).streak, Streak(1, 1, False))
 
 
-class DailySummariesTest(unittest.TestCase):
-    def test_window_length_order_and_zero_days(self):
-        results = [_session(_ago(1), wpm=30.0)]
-        days = daily_summaries(results, days=7, today=TODAY)
-        self.assertEqual(len(days), 7)
-        self.assertEqual([d.day for d in days], [_ago(n) for n in range(6, -1, -1)])
-        self.assertEqual(days[-1].day, TODAY)
-        self.assertEqual(days[-1].sessions, 0)
-        self.assertEqual(days[-1].avg_wpm, 0.0)
-        self.assertEqual(days[-1].practice_seconds, 0.0)
-        self.assertEqual(days[-2].sessions, 1)
+class SessionsInRangeTest(unittest.TestCase):
+    def test_one_entry_per_session_oldest_first(self):
+        # Newest first, like Storage.list_sessions(); same-day sessions stay apart.
+        results = [
+            _session(TODAY, hour=18, wpm=50.0),
+            _session(TODAY, hour=9, wpm=30.0),
+            _session(_ago(2), wpm=20.0),
+        ]
+        picked = sessions_in_range(results, days=7, today=TODAY)
+        self.assertEqual([r.wpm for r in picked], [20.0, 30.0, 50.0])
+
+    def test_same_start_keeps_input_order(self):
+        results = [_session(TODAY, wpm=10.0), _session(TODAY, wpm=20.0)]
+        picked = sessions_in_range(results, days=1, today=TODAY)
+        self.assertEqual([r.wpm for r in picked], [10.0, 20.0])
 
     def test_out_of_window_ignored(self):
-        results = [_session(_ago(7)), _session(_ago(-1)), _session(_ago(6))]
-        days = daily_summaries(results, days=7, today=TODAY)
-        self.assertEqual(sum(d.sessions for d in days), 1)
-        self.assertEqual(days[0].sessions, 1)
+        results = [_session(_ago(7)), _session(_ago(-1)), _session(_ago(6), wpm=33.0)]
+        picked = sessions_in_range(results, days=7, today=TODAY)
+        self.assertEqual([r.wpm for r in picked], [33.0])
 
-    def test_averages(self):
-        results = [
-            _session(TODAY, wpm=30.0, accuracy=0.8, duration=30.0),
-            _session(TODAY, wpm=50.0, accuracy=1.0, duration=60.0),
-        ]
-        (day,) = daily_summaries(results, days=1, today=TODAY)
-        self.assertEqual(day.sessions, 2)
-        self.assertAlmostEqual(day.avg_wpm, 40.0)
-        self.assertAlmostEqual(day.best_wpm, 50.0)
-        self.assertAlmostEqual(day.avg_accuracy, 0.9)
-        self.assertAlmostEqual(day.practice_seconds, 90.0)
+    def test_late_night_session_counts_for_local_day(self):
+        results = [_session(_ago(1), hour=23, minute=59, wpm=44.0)]
+        self.assertEqual(sessions_in_range(results, days=1, today=TODAY), [])
+        self.assertEqual(len(sessions_in_range(results, days=2, today=TODAY)), 1)
 
 
 class CharErrorRatesTest(unittest.TestCase):

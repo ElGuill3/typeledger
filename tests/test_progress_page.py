@@ -97,21 +97,24 @@ class ProgressPageDataTest(unittest.TestCase):
             and self.page.recent_accuracy_label.is_ancestor(flow)
         )
 
-    def test_range_defaults_to_30_and_toggle_changes_point_count(self):
+    def test_range_defaults_to_30_and_toggle_filters_sessions(self):
+        self.storage.save_session(session(20, wpm=15.0))
+        self.storage.save_session(session(60, wpm=10.0))
+        self.page.refresh(LAYOUT_ID)
         self.assertEqual(self.page.range_group.get_active_name(), "30")
-        self.assertEqual(len(self.page.wpm_points), 30)
-        for days in (7, 90, 30):
+        for days, count in ((7, 3), (90, 5), (30, 4)):
             self.page.range_group.set_active_name(str(days))
-            self.assertEqual(len(self.page.wpm_points), days)
-            self.assertEqual(len(self.page.accuracy_points), days)
+            self.assertEqual(len(self.page.wpm_points), count)
+            self.assertEqual(len(self.page.accuracy_points), count)
 
-    def test_day_without_sessions_is_a_gap(self):
-        points = dict(self.page.wpm_points)
-        self.assertIsNone(points[TODAY - timedelta(days=3)])
-        self.assertIsNone(points[TODAY])
-        self.assertEqual(points[TODAY - timedelta(days=1)], 50.0)
-        accuracy = dict(self.page.accuracy_points)
-        self.assertAlmostEqual(accuracy[TODAY - timedelta(days=1)], 90.0)
+    def test_one_point_per_session_oldest_first(self):
+        self.storage.save_session(session(1, wpm=60.0, accuracy=0.95))
+        self.page.refresh(LAYOUT_ID)
+        self.assertEqual([wpm for _when, wpm in self.page.wpm_points], [20.0, 30.0, 50.0, 60.0])
+        accuracy = [value for _when, value in self.page.accuracy_points]
+        self.assertEqual(len(accuracy), 4)
+        self.assertAlmostEqual(accuracy[-1], 95.0)
+        self.assertAlmostEqual(accuracy[0], 90.0)
 
     def test_heat_applied_for_error_prone_char(self):
         layout = load_layout(LAYOUT_ID)
