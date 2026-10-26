@@ -1,0 +1,61 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the typeledger-extension package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: typeledger-extension\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-25 19:44-0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: typeledger@elguill3.github.io/extension.js:43
+msgid "TypeLedger Streak"
+msgstr ""
+
+#: typeledger@elguill3.github.io/extension.js:57
+msgid "Open TypeLedger"
+msgstr ""
+
+#: typeledger@elguill3.github.io/extension.js:152
+msgid "No practice yet"
+msgstr ""
+
+#: typeledger@elguill3.github.io/extension.js:159
+#, javascript-format
+msgid "Current streak: %d day"
+msgid_plural "Current streak: %d days"
+msgstr[0] ""
+msgstr[1] ""
+
+#: typeledger@elguill3.github.io/extension.js:164
+#, javascript-format
+msgid "Longest streak: %d day"
+msgid_plural "Longest streak: %d days"
+msgstr[0] ""
+msgstr[1] ""
+
+#: typeledger@elguill3.github.io/extension.js:167
+msgid "Practiced today"
+msgstr ""
+
+#: typeledger@elguill3.github.io/extension.js:168
+msgid "Not practiced yet today"
+msgstr ""
+
+#: typeledger@elguill3.github.io/extension.js:170
+msgid "Last 7 days: {wpm} WPM · {accuracy}%"
+msgstr ""
+
+#: typeledger@elguill3.github.io/extension.js:173
+msgid "No sessions in the last 7 days"
+msgstr ""

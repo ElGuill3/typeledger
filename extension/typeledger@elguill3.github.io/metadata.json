@@ -1,0 +1,8 @@
+{
+  "uuid": "typeledger@elguill3.github.io",
+  "name": "TypeLedger Streak",
+  "description": "Shows your TypeLedger typing practice streak in the top bar and opens the app.",
+  "shell-version": ["50"],
+  "url": "https://github.com/ElGuill3/typeledger",
+  "gettext-domain": "typeledger-extension"
+}

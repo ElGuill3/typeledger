@@ -1,3 +1,6 @@
+import contextlib
+import io
+import json
 import os
 import tempfile
 import unittest
@@ -49,6 +52,33 @@ class OpenStorageTest(unittest.TestCase):
         self.assertTrue(unavailable)
         self.assertEqual(storage.list_sessions(), [])
         os.unlink(blocker.name)
+
+
+class CreateWindowTest(unittest.TestCase):
+    def test_exports_summary_at_startup_with_real_storage(self):
+        from typeledger.application import create_window
+
+        data_home = tempfile.mkdtemp()
+        with mock.patch.dict(os.environ, {"XDG_DATA_HOME": data_home}):
+            window = create_window()
+        self.addCleanup(window.storage.close)
+        path = os.path.join(data_home, "typeledger", "summary.json")
+        with open(path, encoding="utf-8") as summary:
+            self.assertEqual(json.load(summary)["schema"], 1)
+
+    def test_unwritable_data_dir_falls_back_without_crashing_or_exporting(self):
+        from typeledger.application import create_window
+
+        blocker = tempfile.NamedTemporaryFile(delete=False)
+        blocker.close()
+        self.addCleanup(os.unlink, blocker.name)
+        stderr = io.StringIO()
+        with mock.patch.dict(os.environ, {"XDG_DATA_HOME": blocker.name}):
+            with contextlib.redirect_stderr(stderr):
+                window = create_window()
+        self.addCleanup(window.storage.close)
+        self.assertIn("cannot open history database", stderr.getvalue())
+        self.assertNotIn("cannot export summary", stderr.getvalue())
 
 
 if __name__ == "__main__":

@@ -12,6 +12,11 @@ a local history of your sessions.
 
 Requires GTK 4, libadwaita 1.x and PyGObject (the system Python on Fedora has them).
 
+## Panel extension
+
+A GNOME Shell extension shows your practice streak in the top bar and opens the
+app. See [extension/README.md](extension/README.md) to build, install and enable it.
+
 ## Tests
 
 ```sh

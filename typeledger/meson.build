@@ -19,6 +19,7 @@ python.install_sources(
     'core/progress.py',
     'core/practice.py',
     'core/storage.py',
+    'core/summary.py',
     'core/text_display.py',
     'core/textgen.py',
   ),
