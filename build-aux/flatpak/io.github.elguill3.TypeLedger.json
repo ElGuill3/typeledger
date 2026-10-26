@@ -10,7 +10,9 @@
     "--socket=wayland",
     "--device=dri"
   ],
-  "cleanup": ["*.pyc"],
+  "cleanup": [
+    "*.pyc"
+  ],
   "modules": [
     {
       "name": "typeledger",
@@ -18,7 +20,14 @@
       "sources": [
         {
           "type": "dir",
-          "path": "../.."
+          "path": "../..",
+          "skip": [
+            ".git",
+            "_build",
+            "_flatpak",
+            ".flatpak-builder",
+            "odd"
+          ]
         }
       ]
     }
