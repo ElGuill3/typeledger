@@ -168,8 +168,8 @@ msgid "Complete a practice session to see your progress here."
 msgstr "Complete una sesión de práctica para ver su progreso aquí."
 
 #: typeledger/ui/progress_page.py:80
-msgid "Daily progress"
-msgstr "Progreso diario"
+msgid "Progress by session"
+msgstr "Progreso por sesión"
 
 #: typeledger/ui/progress_page.py:91
 msgid "WPM"

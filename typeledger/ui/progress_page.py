@@ -6,9 +6,9 @@ from gi.repository import Adw, Gtk
 from typeledger.core.layout import load_layout
 from typeledger.core.progress import (
     char_error_rates,
-    daily_summaries,
     key_heat,
     overview,
+    sessions_in_range,
 )
 from typeledger.ui.chart_view import ChartView
 from typeledger.ui.keyboard_view import KeyboardView
@@ -35,7 +35,7 @@ def _duration(seconds):
 
 
 class ProgressPage(Adw.Bin):
-    """Streak, totals, daily WPM/accuracy charts and the error heatmap."""
+    """Streak, totals, per-session WPM/accuracy charts and the error heatmap."""
 
     __gtype_name__ = "TypeLedgerProgressPage"
 
@@ -77,7 +77,7 @@ class ProgressPage(Adw.Bin):
         box.append(self._build_overview_row())
 
         header = Gtk.Box(spacing=12)
-        header.append(Gtk.Label(label=_("Daily progress"), xalign=0, hexpand=True,
+        header.append(Gtk.Label(label=_("Progress by session"), xalign=0, hexpand=True,
                                 css_classes=["title-4"]))
         self.range_group = Adw.ToggleGroup(css_classes=["round"])
         for days in RANGES:
@@ -191,13 +191,10 @@ class ProgressPage(Adw.Bin):
 
     def _update_charts(self):
         days = int(self.range_group.get_active_name() or DEFAULT_RANGE)
-        summaries = daily_summaries(self._results, days=days, today=self._today())
-        self.wpm_points = [
-            (s.day, s.avg_wpm if s.sessions else None) for s in summaries
-        ]
-        self.accuracy_points = [
-            (s.day, s.avg_accuracy * 100 if s.sessions else None) for s in summaries
-        ]
+        # list_sessions() is newest first; reversing keeps same-time ties in save order.
+        sessions = sessions_in_range(reversed(self._results), days=days, today=self._today())
+        self.wpm_points = [(r.started_at, r.wpm) for r in sessions]
+        self.accuracy_points = [(r.started_at, r.accuracy * 100) for r in sessions]
         self.wpm_chart.set_points(self.wpm_points)
         self.accuracy_chart.set_points(self.accuracy_points)
 

@@ -21,16 +21,6 @@ class Streak:
 
 
 @dataclass(frozen=True)
-class DailySummary:
-    day: date
-    sessions: int  # 0 means no practice that day (a gap, not a zero)
-    avg_wpm: float
-    best_wpm: float
-    avg_accuracy: float
-    practice_seconds: float
-
-
-@dataclass(frozen=True)
 class CharErrorRate:
     char: str
     hits: int
@@ -76,35 +66,16 @@ def compute_streak(days: Iterable[date], today: date) -> Streak:
     return Streak(current, longest, practiced_today)
 
 
-def daily_summaries(
+def sessions_in_range(
     results: Iterable[SessionResult], *, days: int, today: date
-) -> list[DailySummary]:
-    """One summary per day for the ``days`` days ending at ``today``, oldest first."""
-    window = [today - timedelta(days=offset) for offset in range(days - 1, -1, -1)]
-    by_day = defaultdict(list)
-    first = window[0] if window else today
-    for result in results:
-        day = session_day(result)
-        if first <= day <= today:
-            by_day[day].append(result)
+) -> list[SessionResult]:
+    """Sessions of the ``days`` days ending at ``today``, oldest first.
 
-    summaries = []
-    for day in window:
-        group = by_day.get(day, [])
-        if not group:
-            summaries.append(DailySummary(day, 0, 0.0, 0.0, 0.0, 0.0))
-            continue
-        summaries.append(
-            DailySummary(
-                day=day,
-                sessions=len(group),
-                avg_wpm=_mean(r.wpm for r in group),
-                best_wpm=max(r.wpm for r in group),
-                avg_accuracy=_mean(r.accuracy for r in group),
-                practice_seconds=sum(r.duration_s for r in group),
-            )
-        )
-    return summaries
+    Sessions with the same ``started_at`` keep their input order.
+    """
+    first = today - timedelta(days=days - 1)
+    picked = [r for r in results if first <= session_day(r) <= today]
+    return sorted(picked, key=lambda r: r.started_at)
 
 
 def char_error_rates(

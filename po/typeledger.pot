@@ -169,7 +169,7 @@ msgid "Complete a practice session to see your progress here."
 msgstr ""
 
 #: typeledger/ui/progress_page.py:80
-msgid "Daily progress"
+msgid "Progress by session"
 msgstr ""
 
 #: typeledger/ui/progress_page.py:91
