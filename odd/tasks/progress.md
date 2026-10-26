@@ -22,7 +22,7 @@ Objective: a Progress view with day streaks, WPM/accuracy charts and a per-key e
 - T1 [S1, S2, S3, S4] `core/progress.py`: streak, daily summaries, char error rates, key heat, overview — delegated (writer A) — done (a61f294; RED ModuleNotFoundError → GREEN 21 tests)
 - T2 [S2] `ui/chart_view.py`: cairo line chart with gaps and empty state — delegated (writer B) — done (RED errors=11 → GREEN 7 tests; parent rendered a 30-day chart with gaps and checked it)
 - T3 [S3] Heat levels in `ui/keyboard_view.py` — delegated (writer C) — done (07da024; RED AttributeError set_heat → GREEN 8 tests; parent rendered a sample heat map and checked it)
-- T4 [S4, S5, S6] `ui/progress_page.py`, view switcher in the window, refresh after save, Spanish strings — delegated (after T1-T3) — in_progress
+- T4 [S4, S5, S6] `ui/progress_page.py`, view switcher in the window, refresh after save, Spanish strings — delegated (after T1-T3) — done (0952827; RED 6 errors + focus-capture failure → GREEN; full suite 147 OK; parent screenshot with seeded history: streak 6 / longest 7 match seeded gaps)
 
 ## Log
 
@@ -30,3 +30,4 @@ Objective: a Progress view with day streaks, WPM/accuracy charts and a per-key e
 - L2 Assumptions above were stated to the user before starting; context backstop already reached in the parent session, so every multi-step unit is delegated.
 - L3 T1 accepted. Notes for T4: `key_heat` omits zero-level keys (missing id = cold); averages are plain per-session means; helper `session_day(result)` exists.
 - L4 T2/T3 accepted. ChartView API: `set_points([(date, float|None)])`, `set_y_range(min, max)`, `set_value_format(fn)`, `set_title(text)`; new string "No sessions in this period" must reach POTFILES/es.po in T4. KeyboardView: `set_heat({key_id: 0..1})`.
+- L5 T4 done. Found and fixed: hidden practice page kept keyboard focus after switching to Progress (window now moves focus on view change). Plural strings use `%d` with ngettext. Spanish uses "usted" (GNOME convention). RDD assess c57c780..0952827: medium, reviewDue false. Known gaps: a timed session keeps running if you switch to Progress mid-session (results dialog may appear there); overview cards may get cramped in narrow windows; one ResourceWarning (unclosed DB) in the test suite. Phase 2 closed; not pushed (push needs the user's go-ahead).
