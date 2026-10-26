@@ -24,3 +24,4 @@ Objective: close the remaining items after the four planned phases. Branch: `fea
 - L3 (user): "si" — to installing flatpak-builder (asked: "¿instalo flatpak-builder, que baja el SDK de GNOME de unos cientos de MB, o lo dejamos sin verificar?").
 - L4 T2 accepted. Known: screen lock disables extensions and dismisses an unread reminder, which then does not come back that day. Test follow-ups for tests/test_extension.py (unconditional reminder.js pack, zip check, GJS reminder suite, purity) handed to the T3 writer.
 - L5 First flatpak-builder run failed: the agent's private /tmp is not visible to the host-side build helper; build moved to the gitignored `_build/flatpak`, and the manifest's dir source now skips build dirs.
+- L6 (user): "si" — pushed feat/polish; repacked (with reminder.js) and reinstalled the extension with `gnome-extensions install --force`; still enabled; takes effect at the user's next login.
