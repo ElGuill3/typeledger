@@ -7,6 +7,7 @@ gi.require_version("Adw", "1")
 
 from gi.repository import Adw, Gdk  # noqa: E402
 
+from typeledger.core.engine import CharState  # noqa: E402
 from typeledger.core.models import MODE_TIME, MODE_WORDS  # noqa: E402
 from typeledger.core.practice import Practice, PracticeSettings  # noqa: E402
 from typeledger.core.storage import Storage  # noqa: E402
@@ -68,6 +69,70 @@ class PracticePageTest(unittest.TestCase):
         self.page.practice.session._states = [self.page.practice.session.states[0]]
         self.page.refresh()
         self.assertEqual(self.page.keyboard._layer, 1)
+
+    def test_enter_in_prose_mode_is_swallowed_without_typing(self):
+        handled = self.page._on_key_pressed(None, Gdk.KEY_Return, 0, 0)
+        self.assertTrue(handled)
+        self.assertEqual(self.page.practice.session.position, 0)
+        self.assertEqual(self.page.practice.session.keystrokes, 0)
+
+    def test_language_dropdown_lists_prose_and_code(self):
+        model = self.page.language_dropdown.get_model()
+        names = [model.get_string(i) for i in range(model.get_n_items())]
+        self.assertEqual(names, ["English", "Spanish", "Python", "JavaScript", "Rust", "Go"])
+
+    def test_selecting_python_restarts_code_session(self):
+        self.page.language_dropdown.set_selected(2)
+        practice = self.page.practice
+        self.assertEqual(practice.settings.language, "python")
+        self.assertTrue(practice.is_code)
+        self.assertIn("\n", practice.session.target)
+
+
+class CodePracticePageTest(unittest.TestCase):
+    def setUp(self):
+        self.storage = Storage(":memory:")
+        self.addCleanup(self.storage.close)
+        self.page = PracticePage(
+            self.storage,
+            settings=PracticeSettings("python", MODE_WORDS, 10, "corne-4x6"),
+        )
+        self.page.practice.session._target = "if x:\n    y"
+        self.page.practice.session._states = [CharState.PENDING] * 11
+        self.page.refresh()
+
+    def test_dropdown_shows_code_language(self):
+        self.assertEqual(self.page.language_dropdown.get_selected(), 2)
+
+    def test_enter_types_newline_and_flashes_enter(self):
+        self.page._on_commit(None, "if x:")
+        enter = self.page.practice.layout.keys_for_special("enter")
+        self.assertEqual(self.page.keyboard._hint, frozenset(enter))
+        self.assertIn("⏎", self.page.text_label.get_text())
+        handled = self.page._on_key_pressed(None, Gdk.KEY_Return, 0, 0)
+        self.assertTrue(handled)
+        session = self.page.practice.session
+        self.assertEqual(session.position, 10)  # newline typed, indent skipped
+        self.assertEqual(session.keystrokes, 6)
+        self.assertEqual(self.page.keyboard._pressed, frozenset(enter))
+
+    def test_tab_is_swallowed_without_typing(self):
+        self.assertTrue(self.page._on_key_pressed(None, Gdk.KEY_Tab, 0, 0))
+        self.assertEqual(self.page.practice.session.keystrokes, 0)
+
+    def test_word_counter_counts_whitespace_tokens(self):
+        self.page._on_commit(None, "if x:")
+        self.page._on_key_pressed(None, Gdk.KEY_Return, 0, 0)
+        self.assertTrue(self.page.stats_label.get_label().endswith("2/10"))
+
+    def test_enter_completing_session_saves_it(self):
+        self.page.practice.session._target = "a\nb\n"
+        self.page.practice.session._states = [CharState.PENDING] * 4
+        self.page._on_commit(None, "a")
+        self.page._on_key_pressed(None, Gdk.KEY_Return, 0, 0)
+        self.page._on_commit(None, "b")
+        self.page._on_key_pressed(None, Gdk.KEY_Return, 0, 0)
+        self.assertEqual(self.storage.list_sessions()[0].result.language, "python")
 
 
 class WindowTest(unittest.TestCase):
@@ -200,6 +265,29 @@ class ViewSwitchSessionTest(unittest.TestCase):
         self.window.view_stack.set_visible_child_name("progress")
         self.window.view_stack.set_visible_child_name("practice")
         self.assertIs(self.page.practice.session, session)
+
+
+class PreviousLineContextTest(unittest.TestCase):
+    def test_previous_line_stays_visible_after_moving_to_the_next(self):
+        with Storage(":memory:") as storage:
+            page = PracticePage(
+                storage, settings=PracticeSettings("python", MODE_WORDS, 25, "corne-4x6")
+            )
+            target = page.practice.session.target
+            first_line = target[: target.index("\n")]
+            page._on_commit(None, first_line)
+            page._on_key_pressed(None, Gdk.KEY_Return, 0, 0)
+            self.assertGreater(page.practice.session.position, len(first_line))
+            self.assertIn(first_line.strip(), page.text_label.get_text())
+
+    def test_first_line_has_no_previous_context(self):
+        with Storage(":memory:") as storage:
+            page = PracticePage(
+                storage, settings=PracticeSettings("en", MODE_WORDS, 100, "corne-4x6")
+            )
+            target = page.practice.session.target
+            shown = page.text_label.get_text()
+            self.assertTrue(shown.startswith(target[:10]))
 
 
 if __name__ == "__main__":

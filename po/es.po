@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: typeledger\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-25 18:38-0600\n"
+"POT-Creation-Date: 2026-10-25 19:06-0600\n"
 "PO-Revision-Date: 2026-10-25 18:45-0600\n"
 "Last-Translator: ElGuill3\n"
 "Language-Team: Spanish\n"
@@ -83,45 +83,45 @@ msgstr "Alt"
 msgid "Super"
 msgstr "Súper"
 
-#: typeledger/ui/practice_page.py:34
+#: typeledger/ui/practice_page.py:36
 msgid "English"
 msgstr "Inglés"
 
-#: typeledger/ui/practice_page.py:34
+#: typeledger/ui/practice_page.py:37
 msgid "Spanish"
 msgstr "Español"
 
-#: typeledger/ui/practice_page.py:91
+#: typeledger/ui/practice_page.py:99
 msgid "Time"
 msgstr "Tiempo"
 
-#: typeledger/ui/practice_page.py:92
+#: typeledger/ui/practice_page.py:100
 msgid "Words"
 msgstr "Palabras"
 
-#: typeledger/ui/practice_page.py:104
+#: typeledger/ui/practice_page.py:112
 msgid "Text language"
 msgstr "Idioma del texto"
 
-#: typeledger/ui/practice_page.py:111
+#: typeledger/ui/practice_page.py:119
 msgid "Keyboard layout"
 msgstr "Distribución del teclado"
 
-#: typeledger/ui/practice_page.py:116
+#: typeledger/ui/practice_page.py:124
 msgid "Restart"
 msgstr "Reiniciar"
 
-#: typeledger/ui/practice_page.py:128 typeledger/ui/practice_page.py:201
+#: typeledger/ui/practice_page.py:136 typeledger/ui/practice_page.py:223
 #, python-brace-format
 msgid "{seconds} s"
 msgstr "{seconds} s"
 
-#: typeledger/ui/practice_page.py:207
+#: typeledger/ui/practice_page.py:230
 #, python-brace-format
 msgid "{wpm} WPM · {accuracy}% · {progress}"
 msgstr "{wpm} PPM · {accuracy}% · {progress}"
 
-#: typeledger/ui/practice_page.py:230
+#: typeledger/ui/practice_page.py:253
 #, python-brace-format
 msgid ""
 "{wpm} WPM · {accuracy}% accuracy\n"
@@ -130,15 +130,15 @@ msgstr ""
 "{wpm} PPM · {accuracy}% de precisión\n"
 "Bruto: {raw} PPM · Tiempo: {seconds} s"
 
-#: typeledger/ui/practice_page.py:239
+#: typeledger/ui/practice_page.py:262
 msgid "This session could not be saved."
 msgstr "No se pudo guardar esta sesión."
 
-#: typeledger/ui/practice_page.py:240
+#: typeledger/ui/practice_page.py:263
 msgid "Session complete"
 msgstr "Sesión completada"
 
-#: typeledger/ui/practice_page.py:241
+#: typeledger/ui/practice_page.py:264
 msgid "Practice again"
 msgstr "Practicar de nuevo"
 
@@ -196,35 +196,35 @@ msgstr ""
 msgid "Current streak"
 msgstr "Racha actual"
 
-#: typeledger/ui/progress_page.py:131
+#: typeledger/ui/progress_page.py:141
 msgid "Sessions"
 msgstr "Sesiones"
 
-#: typeledger/ui/progress_page.py:132
+#: typeledger/ui/progress_page.py:142
 msgid "Practice time"
 msgstr "Tiempo de práctica"
 
-#: typeledger/ui/progress_page.py:133
+#: typeledger/ui/progress_page.py:143
 msgid "Best WPM"
 msgstr "Mejor PPM"
 
-#: typeledger/ui/progress_page.py:134
+#: typeledger/ui/progress_page.py:144
 msgid "WPM, last 7 days"
 msgstr "PPM, últimos 7 días"
 
-#: typeledger/ui/progress_page.py:135
+#: typeledger/ui/progress_page.py:145
 msgid "Accuracy, last 7 days"
 msgstr "Precisión, últimos 7 días"
 
-#: typeledger/ui/progress_page.py:157
+#: typeledger/ui/progress_page.py:167
 #, python-brace-format
 msgid "Longest streak: {days}"
 msgstr "Racha más larga: {days}"
 
-#: typeledger/ui/progress_page.py:160
+#: typeledger/ui/progress_page.py:170
 msgid "Practiced today"
 msgstr "Ya practicó hoy"
 
-#: typeledger/ui/progress_page.py:161
+#: typeledger/ui/progress_page.py:171
 msgid "Practice today to keep your streak"
 msgstr "Practique hoy para mantener su racha"

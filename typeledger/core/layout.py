@@ -78,6 +78,8 @@ class KeyboardLayout:
         """Key ids to press for ``ch``: layer key, then Shift, then the char key."""
         if ch == " ":
             return self.keys_for_special("space")[:1]
+        if ch == "\n":
+            return self.keys_for_special("enter")[:1]
         if len(ch) != 1:
             return ()
         base = _UNSHIFTED.get(ch)

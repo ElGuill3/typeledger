@@ -9,7 +9,9 @@ MODE_WORDS = "words"
 
 TIME_OPTIONS = (15, 30, 60, 120)
 WORD_OPTIONS = (10, 25, 50, 100)
-LANGUAGES = ("en", "es")
+LANGUAGES = ("en", "es")  # prose
+CODE_LANGUAGES = ("python", "javascript", "rust", "go")
+TEXT_SOURCES = LANGUAGES + CODE_LANGUAGES  # valid SessionResult.language values
 
 
 @dataclass(frozen=True)

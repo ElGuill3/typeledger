@@ -27,6 +27,10 @@ class TypingSession:
 
     Every `type_char` call is a keystroke. Backspace only moves the cursor
     back, so corrected errors still count against accuracy.
+
+    With `auto_indent`, the leading spaces of a line are filled in as soon
+    as the cursor passes the preceding newline: no keystrokes, no char
+    stats. Backspace from the first char after them returns to the newline.
     """
 
     def __init__(
@@ -39,6 +43,7 @@ class TypingSession:
         layout_id: str,
         clock: Callable[[], float] = time.monotonic,
         now: Callable[[], datetime] = lambda: datetime.now().astimezone(),
+        auto_indent: bool = False,
     ):
         if mode not in (MODE_TIME, MODE_WORDS):
             raise ValueError(f"unknown mode: {mode!r}")
@@ -49,6 +54,7 @@ class TypingSession:
         self._layout_id = layout_id
         self._clock = clock
         self._now = now
+        self._auto_indent = auto_indent
 
         self._states = [CharState.PENDING] * len(target)
         self._position = 0
@@ -109,6 +115,8 @@ class TypingSession:
             CharState.CORRECT if correct else CharState.INCORRECT
         )
         self._position += 1
+        if self._auto_indent and expected == "\n":
+            self._skip_indent()
 
         if self._mode == MODE_WORDS and self._position == len(self._target):
             self._end_time = self._clock()
@@ -119,6 +127,22 @@ class TypingSession:
             return
         self._position -= 1
         self._states[self._position] = CharState.PENDING
+        if self._auto_indent and self._target[self._position] == " ":
+            # Only auto-filled indentation can sit between a newline and the
+            # cursor here: it is undone together with the newline.
+            line_start = self._target.rfind("\n", 0, self._position) + 1
+            if line_start > 0 and not self._target[line_start : self._position].strip(" "):
+                for index in range(line_start - 1, self._position):
+                    self._states[index] = CharState.PENDING
+                self._position = line_start - 1
+
+    def _skip_indent(self) -> None:
+        while (
+            self._position < len(self._target)
+            and self._target[self._position] == " "
+        ):
+            self._states[self._position] = CharState.CORRECT
+            self._position += 1
 
     def extend(self, text: str) -> None:
         self._target += text

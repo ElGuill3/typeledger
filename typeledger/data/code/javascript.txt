@@ -1,0 +1,89 @@
+#! TypeLedger JavaScript snippets: separated by "---" lines, 4-space indentation.
+function clamp(value, min, max) {
+    return Math.min(Math.max(value, min), max);
+}
+---
+const total = items
+    .filter((item) => item.inStock)
+    .map((item) => item.price * item.quantity)
+    .reduce((sum, price) => sum + price, 0);
+---
+async function loadUser(id) {
+    const response = await fetch(`/api/users/${id}`);
+    if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+    }
+    return response.json();
+}
+---
+class Stack {
+    #items = [];
+    push(item) {
+        this.#items.push(item);
+    }
+    pop() {
+        return this.#items.pop();
+    }
+}
+---
+const { name, age = 0, ...rest } = person;
+const copy = { ...rest, name: name.trim() };
+console.log(`${copy.name} is ${age}`);
+---
+button.addEventListener("click", (event) => {
+    event.preventDefault();
+    counter += 1;
+    label.textContent = `Clicked ${counter} times`;
+});
+---
+function debounce(fn, delay) {
+    let timer = null;
+    return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn(...args), delay);
+    };
+}
+---
+const byCity = new Map();
+for (const user of users) {
+    const list = byCity.get(user.city) ?? [];
+    list.push(user);
+    byCity.set(user.city, list);
+}
+---
+export function slugify(title) {
+    return title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+}
+---
+try {
+    const data = JSON.parse(raw);
+    render(data.items || []);
+} catch (error) {
+    console.error("bad payload:", error.message);
+}
+---
+function sleep(ms) {
+    return new Promise((done) => setTimeout(done, ms));
+}
+for (let i = 3; i > 0; i--) {
+    console.log(i);
+    await sleep(1000);
+}
+---
+switch (key) {
+    case "ArrowUp":
+        y -= 1;
+        break;
+    case "ArrowDown":
+        y += 1;
+        break;
+    default:
+        return;
+}
+---
+const unique = [...new Set(tags)].sort();
+const isEmpty = unique.length === 0;
+const label = isEmpty ? "none" : unique.join(", ");
