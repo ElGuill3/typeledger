@@ -57,6 +57,9 @@ class TypeLedgerWindow(Adw.ApplicationWindow):
 
     def _on_view_changed(self, *_args):
         if self.view_stack.get_visible_child_name() == "progress":
+            # A timed session cannot be paused; leaving it would let the clock
+            # finish it unseen, so drop it and offer a fresh one on return.
+            self.practice_page.cancel_running_time_session()
             self._refresh_progress()
             # The stack keeps focus on the hidden practice page, which would
             # keep capturing keystrokes; move it out explicitly.

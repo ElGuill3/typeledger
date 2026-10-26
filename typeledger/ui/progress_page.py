@@ -127,7 +127,17 @@ class ProgressPage(Adw.Bin):
         return _card(content)
 
     def _build_overview_row(self):
-        row = Gtk.Box(spacing=12, homogeneous=True)
+        # Cards wrap onto more lines when the window is too narrow for five.
+        row = Gtk.FlowBox(
+            selection_mode=Gtk.SelectionMode.NONE,
+            homogeneous=True,
+            min_children_per_line=2,
+            max_children_per_line=5,
+            column_spacing=12,
+            row_spacing=12,
+            can_focus=False,
+        )
+        self.overview_box = row
         self.total_sessions_label = _stat(row, _("Sessions"))
         self.total_time_label = _stat(row, _("Practice time"))
         self.best_wpm_label = _stat(row, _("Best WPM"))
@@ -207,7 +217,9 @@ def _stat(row, caption):
     value = Gtk.Label(css_classes=["title-2", "numeric"])
     box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
     box.append(value)
-    box.append(Gtk.Label(label=caption, wrap=True, justify=Gtk.Justification.CENTER,
+    # Capping the natural width keeps long captions from widening every card.
+    box.append(Gtk.Label(label=caption, wrap=True, max_width_chars=12,
+                         justify=Gtk.Justification.CENTER,
                          css_classes=["dim-label", "caption"]))
     row.append(_card(box))
     return value

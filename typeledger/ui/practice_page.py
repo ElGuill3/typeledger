@@ -168,6 +168,20 @@ class PracticePage(Gtk.Box):
         self.refresh()
         self.grab_focus()
 
+    def cancel_running_time_session(self):
+        """Drop a timed session in progress, unsaved; returns True if one was dropped."""
+        practice = self.practice
+        if (
+            practice.settings.mode != MODE_TIME
+            or not practice.session.started
+            or practice.last_result is not None
+        ):
+            return False
+        practice.cancel()
+        self.keyboard.set_pressed(())
+        self.refresh()
+        return True
+
     def refresh(self):
         session = self.practice.session
         lines = wrap_lines(session.target, LINE_WIDTH)

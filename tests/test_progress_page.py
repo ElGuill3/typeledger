@@ -6,7 +6,7 @@ import gi
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 
-from gi.repository import Adw  # noqa: E402
+from gi.repository import Adw, Gtk  # noqa: E402
 
 from typeledger.core.layout import load_layout  # noqa: E402
 from typeledger.core.models import MODE_TIME, CharStat, SessionResult  # noqa: E402
@@ -41,7 +41,9 @@ def session(days_ago, *, wpm=40.0, accuracy=0.9, duration=60.0, stats=None):
 
 class ProgressPageEmptyTest(unittest.TestCase):
     def test_empty_history_shows_status_page(self):
-        page = ProgressPage(Storage(":memory:"), today=lambda: TODAY)
+        storage = Storage(":memory:")
+        self.addCleanup(storage.close)
+        page = ProgressPage(storage, today=lambda: TODAY)
         page.refresh(LAYOUT_ID)
         self.assertIs(page.stack.get_visible_child(), page.empty_page)
         self.assertIsInstance(page.empty_page, Adw.StatusPage)
@@ -50,6 +52,7 @@ class ProgressPageEmptyTest(unittest.TestCase):
 class ProgressPageDataTest(unittest.TestCase):
     def setUp(self):
         self.storage = Storage(":memory:")
+        self.addCleanup(self.storage.close)
         # Practiced 1 and 2 days ago, a gap 3 days ago, then 4 days ago.
         self.storage.save_session(session(1, wpm=50.0, stats={"q": CharStat(1, 9)}))
         self.storage.save_session(session(2, wpm=30.0, stats={"a": CharStat(20, 0)}))
@@ -77,6 +80,22 @@ class ProgressPageDataTest(unittest.TestCase):
         self.assertEqual(self.page.total_sessions_label.get_label(), "3")
         self.assertEqual(self.page.best_wpm_label.get_label(), "50")
         self.assertEqual(self.page.total_time_label.get_label(), "3 min")
+
+    def test_overview_cards_wrap_in_a_flowbox(self):
+        flow = self.page.overview_box
+        self.assertIsInstance(flow, Gtk.FlowBox)
+        self.assertEqual(flow.get_selection_mode(), Gtk.SelectionMode.NONE)
+        self.assertTrue(flow.get_homogeneous())
+        children = []
+        child = flow.get_first_child()
+        while child is not None:
+            children.append(child)
+            child = child.get_next_sibling()
+        self.assertEqual(len(children), 5)
+        self.assertTrue(
+            self.page.total_sessions_label.is_ancestor(flow)
+            and self.page.recent_accuracy_label.is_ancestor(flow)
+        )
 
     def test_range_defaults_to_30_and_toggle_changes_point_count(self):
         self.assertEqual(self.page.range_group.get_active_name(), "30")
