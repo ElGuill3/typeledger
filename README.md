@@ -34,6 +34,17 @@ This also installs the app icon and its symbolic variant into `share/icons/hicol
 
 ## Flatpak
 
+Build into a local repository with [Flatpak Builder](https://flathub.org/apps/org.flatpak.Builder),
+then install the app together with its translations:
+
 ```sh
-flatpak-builder --user --install --force-clean _flatpak build-aux/flatpak/io.github.elguill3.TypeLedger.json
+flatpak run org.flatpak.Builder --user --force-clean \
+    --state-dir=_build/flatpak/state --repo=_build/flatpak/repo \
+    _build/flatpak/build build-aux/flatpak/io.github.elguill3.TypeLedger.json
+flatpak install --user --reinstall "$PWD/_build/flatpak/repo" \
+    io.github.elguill3.TypeLedger io.github.elguill3.TypeLedger.Locale
 ```
+
+Use the native `flatpak-builder` command instead of `flatpak run org.flatpak.Builder`
+if it is installed. Installing with `--install` alone skips the `.Locale` extension,
+so translation changes would not reach the installed app.
