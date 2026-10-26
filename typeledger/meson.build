@@ -35,6 +35,7 @@ python.install_sources(
 python.install_sources(
   files(
     'ui/__init__.py',
+    'ui/chart_view.py',
     'ui/keyboard_view.py',
     'ui/practice_page.py',
   ),
