@@ -13,6 +13,7 @@ from gi.repository import Adw, Gio  # noqa: E402
 
 from typeledger import APP_ID, VERSION  # noqa: E402
 from typeledger.core.storage import Storage, default_db_path  # noqa: E402
+from typeledger.core.summary import default_summary_path  # noqa: E402
 from typeledger.window import TypeLedgerWindow  # noqa: E402
 
 _ = gettext.gettext
@@ -37,6 +38,21 @@ def open_storage():
         return Storage(":memory:"), True
 
 
+def create_window(application=None):
+    """Open the history and build the main window.
+
+    The panel summary is exported only for the real database, so a fallback
+    in-memory history never overwrites it with an empty one.
+    """
+    storage, unavailable = open_storage()
+    return TypeLedgerWindow(
+        storage,
+        history_unavailable=unavailable,
+        summary_path=None if unavailable else default_summary_path(),
+        application=application,
+    )
+
+
 class TypeLedgerApplication(Adw.Application):
     def __init__(self):
         super().__init__(application_id=APP_ID, flags=Gio.ApplicationFlags.DEFAULT_FLAGS)
@@ -46,10 +62,7 @@ class TypeLedgerApplication(Adw.Application):
     def do_activate(self):
         window = self.props.active_window
         if window is None:
-            storage, unavailable = open_storage()
-            window = TypeLedgerWindow(
-                storage, history_unavailable=unavailable, application=self
-            )
+            window = create_window(self)
         window.present()
 
     def _add_action(self, name, callback, shortcuts=None):

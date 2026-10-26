@@ -1,7 +1,9 @@
 import gettext
+import sys
 
 from gi.repository import Adw, Gio, Gtk
 
+from typeledger.core.summary import export_summary
 from typeledger.ui.practice_page import PracticePage
 from typeledger.ui.progress_page import ProgressPage
 
@@ -9,8 +11,11 @@ _ = gettext.gettext
 
 
 class TypeLedgerWindow(Adw.ApplicationWindow):
-    def __init__(self, storage, history_unavailable=False, **kwargs):
+    def __init__(self, storage, history_unavailable=False, summary_path=None, **kwargs):
+        """`summary_path` enables the panel summary export; None disables it."""
         super().__init__(**kwargs)
+        self.storage = storage
+        self._summary_path = summary_path
         self.set_title("TypeLedger")
         self.set_default_size(1000, 720)
 
@@ -21,7 +26,7 @@ class TypeLedgerWindow(Adw.ApplicationWindow):
 
         self.practice_page = PracticePage(storage)
         self.progress_page = ProgressPage(storage)
-        self.practice_page.connect("session-completed", lambda *_args: self._refresh_progress())
+        self.practice_page.connect("session-completed", self._on_session_completed)
 
         self.view_stack = Adw.ViewStack()
         self.view_stack.add_titled_with_icon(
@@ -50,7 +55,24 @@ class TypeLedgerWindow(Adw.ApplicationWindow):
         toolbar_view.set_content(self.toast_overlay)
         self.set_content(toolbar_view)
         self._refresh_progress()
+        self._export_summary()
         self.practice_page.grab_focus()
+
+    def _on_session_completed(self, *_args):
+        self._refresh_progress()
+        practice = self.practice_page.practice
+        result = practice.last_result
+        # Zero-keystroke sessions are not saved, and failed saves change nothing.
+        if result is not None and result.keystrokes > 0 and practice.save_error is None:
+            self._export_summary()
+
+    def _export_summary(self):
+        if self._summary_path is None:
+            return
+        try:
+            export_summary(self.storage, self._summary_path)
+        except OSError as error:
+            print(f"typeledger: cannot export summary: {error}", file=sys.stderr)
 
     def _refresh_progress(self):
         self.progress_page.refresh(self.practice_page.practice.settings.layout_id)
