@@ -70,6 +70,14 @@ class PracticePageTest(unittest.TestCase):
         self.page.refresh()
         self.assertEqual(self.page.keyboard._layer, 1)
 
+    def test_prose_word_counter_counts_typed_spaces(self):
+        self.page.practice.session._target = "ab cd ef"
+        self.page.practice.session._states = [CharState.PENDING] * 8
+        for typed, expected in (("a", "0/10"), ("b", "0/10"), (" ", "1/10"), ("cd", "1/10")):
+            with self.subTest(typed=typed):
+                self.page._on_commit(None, typed)
+                self.assertTrue(self.page.stats_label.get_label().endswith(expected))
+
     def test_enter_in_prose_mode_is_swallowed_without_typing(self):
         handled = self.page._on_key_pressed(None, Gdk.KEY_Return, 0, 0)
         self.assertTrue(handled)
@@ -124,6 +132,26 @@ class CodePracticePageTest(unittest.TestCase):
         self.page._on_commit(None, "if x:")
         self.page._on_key_pressed(None, Gdk.KEY_Return, 0, 0)
         self.assertTrue(self.page.stats_label.get_label().endswith("2/10"))
+
+    def test_word_counter_ignores_a_partly_typed_token(self):
+        for typed, expected in (("i", "0/10"), ("if", "0/10"), ("if ", "1/10"), ("if x", "1/10")):
+            with self.subTest(typed=typed):
+                self.page.practice.restart()
+                session = self.page.practice.session
+                session._target = "if x:\n    y"
+                session._states = [CharState.PENDING] * 11
+                self.page._on_commit(None, typed)
+                self.assertTrue(self.page.stats_label.get_label().endswith(expected))
+
+    def test_word_counter_counts_the_last_token_at_text_end(self):
+        self.page.practice.session._target = "if x:\n    yz"
+        self.page.practice.session._states = [CharState.PENDING] * 12
+        self.page._on_commit(None, "if x:")
+        self.page._on_key_pressed(None, Gdk.KEY_Return, 0, 0)
+        self.page._on_commit(None, "y")
+        self.assertTrue(self.page.stats_label.get_label().endswith("2/10"))
+        self.page._on_commit(None, "z")
+        self.assertTrue(self.page.stats_label.get_label().endswith("3/10"))
 
     def test_enter_completing_session_saves_it(self):
         self.page.practice.session._target = "a\nb\n"

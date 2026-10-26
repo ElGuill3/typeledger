@@ -225,7 +225,10 @@ class PracticePage(Gtk.Box):
             progress = _("{seconds} s").format(seconds=remaining)
         else:
             typed = session.target[: session.position]
-            typed_words = len(typed.split()) if practice.is_code else typed.count(" ")
+            if practice.is_code:
+                typed_words = _completed_tokens(typed, len(session.target))
+            else:
+                typed_words = typed.count(" ")
             progress = f"{typed_words}/{practice.settings.mode_value}"
         accuracy = session.live_accuracy() if session.keystrokes else 1.0
         self.stats_label.set_label(
@@ -328,6 +331,15 @@ class PracticePage(Gtk.Box):
         self._flash_source = None
         self.keyboard.set_pressed(())
         return GLib.SOURCE_REMOVE
+
+
+def _completed_tokens(typed, target_length):
+    """Whitespace-separated tokens done so far: a token counts once the
+    whitespace after it is typed, or when the text end is reached."""
+    tokens = len(typed.split())
+    if tokens and not typed[-1].isspace() and len(typed) < target_length:
+        tokens -= 1
+    return tokens
 
 
 def _hex_color(rgba_string):
