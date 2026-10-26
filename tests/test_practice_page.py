@@ -267,5 +267,28 @@ class ViewSwitchSessionTest(unittest.TestCase):
         self.assertIs(self.page.practice.session, session)
 
 
+class PreviousLineContextTest(unittest.TestCase):
+    def test_previous_line_stays_visible_after_moving_to_the_next(self):
+        with Storage(":memory:") as storage:
+            page = PracticePage(
+                storage, settings=PracticeSettings("python", MODE_WORDS, 25, "corne-4x6")
+            )
+            target = page.practice.session.target
+            first_line = target[: target.index("\n")]
+            page._on_commit(None, first_line)
+            page._on_key_pressed(None, Gdk.KEY_Return, 0, 0)
+            self.assertGreater(page.practice.session.position, len(first_line))
+            self.assertIn(first_line.strip(), page.text_label.get_text())
+
+    def test_first_line_has_no_previous_context(self):
+        with Storage(":memory:") as storage:
+            page = PracticePage(
+                storage, settings=PracticeSettings("en", MODE_WORDS, 100, "corne-4x6")
+            )
+            target = page.practice.session.target
+            shown = page.text_label.get_text()
+            self.assertTrue(shown.startswith(target[:10]))
+
+
 if __name__ == "__main__":
     unittest.main()

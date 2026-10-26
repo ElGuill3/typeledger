@@ -19,7 +19,9 @@ from typeledger.ui.keyboard_view import KeyboardView
 _ = gettext.gettext
 
 LINE_WIDTH = 56
-VISIBLE_LINES = 3
+VISIBLE_LINES = 4
+# Lines kept above the cursor's line so the just-typed context stays visible.
+LINES_BEFORE_CURSOR = 1
 TICK_MS = 100
 PRESS_FLASH_MS = 160
 DEFAULT_LAYOUT = "corne-4x6"
@@ -193,7 +195,7 @@ class PracticePage(Gtk.Box):
     def refresh(self):
         session = self.practice.session
         lines = wrap_lines(session.target, LINE_WIDTH)
-        first = line_index(lines, session.position)
+        first = max(0, line_index(lines, session.position) - LINES_BEFORE_CURSOR)
         accent = Adw.StyleManager.get_default().get_accent_color_rgba().to_string()
         markup_lines = [
             build_markup(
