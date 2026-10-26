@@ -38,6 +38,7 @@ python.install_sources(
     'ui/chart_view.py',
     'ui/keyboard_view.py',
     'ui/practice_page.py',
+    'ui/progress_page.py',
   ),
   subdir: 'typeledger/ui',
 )

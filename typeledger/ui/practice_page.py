@@ -1,7 +1,7 @@
 import gettext
 import locale
 
-from gi.repository import Adw, Gdk, GLib, Gtk
+from gi.repository import Adw, Gdk, GLib, GObject, Gtk
 
 from typeledger.core.keys import special_key_name
 from typeledger.core.layout import available_layouts
@@ -38,6 +38,10 @@ class PracticePage(Gtk.Box):
     """Practice text on top, live stats, and the keyboard layout underneath."""
 
     __gtype_name__ = "TypeLedgerPracticePage"
+    __gsignals__ = {
+        # A session finished, whether or not it could be saved.
+        "session-completed": (GObject.SignalFlags.RUN_FIRST, None, ()),
+    }
 
     def __init__(self, storage, *, settings=None, **kwargs):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=18, **kwargs)
@@ -239,6 +243,7 @@ class PracticePage(Gtk.Box):
         dialog.set_close_response("again")
         dialog.connect("response", lambda *_args: self.restart())
         dialog.present(self)
+        self.emit("session-completed")
 
     # Input
 

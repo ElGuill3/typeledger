@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: typeledger\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-25 18:05-0600\n"
+"POT-Creation-Date: 2026-10-25 18:38-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: data/io.github.elguill3.TypeLedger.desktop.in:2
 msgid "TypeLedger"
@@ -29,47 +30,59 @@ msgstr ""
 msgid "typing;keyboard;corne;practice;"
 msgstr ""
 
-#: typeledger/window.py:17
+#: typeledger/window.py:18
 msgid "About TypeLedger"
 msgstr ""
 
-#: typeledger/window.py:18
+#: typeledger/window.py:19
 msgid "Quit"
 msgstr ""
 
 #: typeledger/window.py:28
+msgid "Practice"
+msgstr ""
+
+#: typeledger/window.py:31
+msgid "Progress"
+msgstr ""
+
+#: typeledger/window.py:45
 msgid "History is unavailable; sessions will not be kept."
 msgstr ""
 
-#: typeledger/ui/keyboard_view.py:22
-msgid "Esc"
+#: typeledger/ui/chart_view.py:118
+msgid "No sessions in this period"
 msgstr ""
 
 #: typeledger/ui/keyboard_view.py:23
-msgid "Tab"
+msgid "Esc"
 msgstr ""
 
 #: typeledger/ui/keyboard_view.py:24
-msgid "Bspc"
+msgid "Tab"
 msgstr ""
 
 #: typeledger/ui/keyboard_view.py:25
-msgid "Enter"
+msgid "Bspc"
 msgstr ""
 
 #: typeledger/ui/keyboard_view.py:26
+msgid "Enter"
+msgstr ""
+
+#: typeledger/ui/keyboard_view.py:27
 msgid "Space"
 msgstr ""
 
-#: typeledger/ui/keyboard_view.py:28
+#: typeledger/ui/keyboard_view.py:29
 msgid "Ctrl"
 msgstr ""
 
-#: typeledger/ui/keyboard_view.py:29
+#: typeledger/ui/keyboard_view.py:30
 msgid "Alt"
 msgstr ""
 
-#: typeledger/ui/keyboard_view.py:30
+#: typeledger/ui/keyboard_view.py:31
 msgid "Super"
 msgstr ""
 
@@ -81,51 +94,136 @@ msgstr ""
 msgid "Spanish"
 msgstr ""
 
-#: typeledger/ui/practice_page.py:87
+#: typeledger/ui/practice_page.py:91
 msgid "Time"
 msgstr ""
 
-#: typeledger/ui/practice_page.py:88
+#: typeledger/ui/practice_page.py:92
 msgid "Words"
 msgstr ""
 
-#: typeledger/ui/practice_page.py:100
+#: typeledger/ui/practice_page.py:104
 msgid "Text language"
 msgstr ""
 
-#: typeledger/ui/practice_page.py:107
+#: typeledger/ui/practice_page.py:111
 msgid "Keyboard layout"
 msgstr ""
 
-#: typeledger/ui/practice_page.py:112
+#: typeledger/ui/practice_page.py:116
 msgid "Restart"
 msgstr ""
 
-#: typeledger/ui/practice_page.py:124 typeledger/ui/practice_page.py:197
+#: typeledger/ui/practice_page.py:128 typeledger/ui/practice_page.py:201
 #, python-brace-format
 msgid "{seconds} s"
 msgstr ""
 
-#: typeledger/ui/practice_page.py:203
+#: typeledger/ui/practice_page.py:207
 #, python-brace-format
 msgid "{wpm} WPM · {accuracy}% · {progress}"
 msgstr ""
 
-#: typeledger/ui/practice_page.py:226
+#: typeledger/ui/practice_page.py:230
 #, python-brace-format
 msgid ""
 "{wpm} WPM · {accuracy}% accuracy\n"
 "Raw: {raw} WPM · Time: {seconds} s"
 msgstr ""
 
-#: typeledger/ui/practice_page.py:235
+#: typeledger/ui/practice_page.py:239
 msgid "This session could not be saved."
 msgstr ""
 
-#: typeledger/ui/practice_page.py:236
+#: typeledger/ui/practice_page.py:240
 msgid "Session complete"
 msgstr ""
 
-#: typeledger/ui/practice_page.py:237
+#: typeledger/ui/practice_page.py:241
 msgid "Practice again"
+msgstr ""
+
+#: typeledger/ui/progress_page.py:26
+#, python-format
+msgid "%d day"
+msgid_plural "%d days"
+msgstr[0] ""
+msgstr[1] ""
+
+#: typeledger/ui/progress_page.py:33
+#, python-brace-format
+msgid "{hours} h {minutes} min"
+msgstr ""
+
+#: typeledger/ui/progress_page.py:34
+#, python-brace-format
+msgid "{minutes} min"
+msgstr ""
+
+#: typeledger/ui/progress_page.py:55
+msgid "No sessions yet"
+msgstr ""
+
+#: typeledger/ui/progress_page.py:56
+msgid "Complete a practice session to see your progress here."
+msgstr ""
+
+#: typeledger/ui/progress_page.py:80
+msgid "Daily progress"
+msgstr ""
+
+#: typeledger/ui/progress_page.py:91
+msgid "WPM"
+msgstr ""
+
+#: typeledger/ui/progress_page.py:97
+msgid "Accuracy"
+msgstr ""
+
+#: typeledger/ui/progress_page.py:102
+msgid "Errors by key"
+msgstr ""
+
+#: typeledger/ui/progress_page.py:108
+#, python-brace-format
+msgid ""
+"Redder keys have more errors. Characters typed fewer than {count} times are "
+"not counted."
+msgstr ""
+
+#: typeledger/ui/progress_page.py:123
+msgid "Current streak"
+msgstr ""
+
+#: typeledger/ui/progress_page.py:131
+msgid "Sessions"
+msgstr ""
+
+#: typeledger/ui/progress_page.py:132
+msgid "Practice time"
+msgstr ""
+
+#: typeledger/ui/progress_page.py:133
+msgid "Best WPM"
+msgstr ""
+
+#: typeledger/ui/progress_page.py:134
+msgid "WPM, last 7 days"
+msgstr ""
+
+#: typeledger/ui/progress_page.py:135
+msgid "Accuracy, last 7 days"
+msgstr ""
+
+#: typeledger/ui/progress_page.py:157
+#, python-brace-format
+msgid "Longest streak: {days}"
+msgstr ""
+
+#: typeledger/ui/progress_page.py:160
+msgid "Practiced today"
+msgstr ""
+
+#: typeledger/ui/progress_page.py:161
+msgid "Practice today to keep your streak"
 msgstr ""
