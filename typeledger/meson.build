@@ -15,6 +15,7 @@ python.install_sources(
     'core/keys.py',
     'core/layout.py',
     'core/models.py',
+    'core/progress.py',
     'core/practice.py',
     'core/storage.py',
     'core/text_display.py',
