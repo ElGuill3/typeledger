@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: typeledger-extension\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-25 19:44-0600\n"
-"PO-Revision-Date: 2026-10-25 19:45-0600\n"
+"POT-Creation-Date: 2026-10-25 21:47-0600\n"
+"PO-Revision-Date: 2026-10-25 21:48-0600\n"
 "Last-Translator: ElGuill3\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -15,44 +15,63 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: typeledger@elguill3.github.io/extension.js:43
+#: typeledger@elguill3.github.io/extension.js:52
 msgid "TypeLedger Streak"
 msgstr "Racha de TypeLedger"
 
-#: typeledger@elguill3.github.io/extension.js:57
+#: typeledger@elguill3.github.io/extension.js:70
 msgid "Open TypeLedger"
 msgstr "Abrir TypeLedger"
 
-#: typeledger@elguill3.github.io/extension.js:152
+#: typeledger@elguill3.github.io/extension.js:242
+#, javascript-format
+msgid "Your streak is %d day — practice today to keep it."
+msgid_plural "Your streak is %d days — practice today to keep it."
+msgstr[0] "Su racha es de %d día: practique hoy para mantenerla."
+msgstr[1] "Su racha es de %d días: practique hoy para mantenerla."
+
+#: typeledger@elguill3.github.io/extension.js:246
+msgid "Practice today to start a streak."
+msgstr "Practique hoy para comenzar una racha."
+
+#: typeledger@elguill3.github.io/extension.js:249
+msgid "Keep your streak going"
+msgstr "Mantenga su racha"
+
+#: typeledger@elguill3.github.io/extension.js:253
+msgid "Practice now"
+msgstr "Practicar ahora"
+
+#: typeledger@elguill3.github.io/extension.js:276
 msgid "No practice yet"
 msgstr "Aún no ha practicado"
 
-#: typeledger@elguill3.github.io/extension.js:159
+#: typeledger@elguill3.github.io/extension.js:283
 #, javascript-format
 msgid "Current streak: %d day"
 msgid_plural "Current streak: %d days"
 msgstr[0] "Racha actual: %d día"
 msgstr[1] "Racha actual: %d días"
 
-#: typeledger@elguill3.github.io/extension.js:164
+#: typeledger@elguill3.github.io/extension.js:288
 #, javascript-format
 msgid "Longest streak: %d day"
 msgid_plural "Longest streak: %d days"
 msgstr[0] "Racha más larga: %d día"
 msgstr[1] "Racha más larga: %d días"
 
-#: typeledger@elguill3.github.io/extension.js:167
+#: typeledger@elguill3.github.io/extension.js:291
 msgid "Practiced today"
 msgstr "Ya practicó hoy"
 
-#: typeledger@elguill3.github.io/extension.js:168
+#: typeledger@elguill3.github.io/extension.js:292
 msgid "Not practiced yet today"
 msgstr "Aún no ha practicado hoy"
 
-#: typeledger@elguill3.github.io/extension.js:170
+#: typeledger@elguill3.github.io/extension.js:294
 msgid "Last 7 days: {wpm} WPM · {accuracy}%"
 msgstr "Últimos 7 días: {wpm} PPM · {accuracy}%"
 
-#: typeledger@elguill3.github.io/extension.js:173
+#: typeledger@elguill3.github.io/extension.js:297
 msgid "No sessions in the last 7 days"
 msgstr "No hay sesiones en los últimos 7 días"

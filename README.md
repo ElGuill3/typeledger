@@ -30,6 +30,8 @@ meson setup _build --prefix="$HOME/.local"
 meson install -C _build
 ```
 
+This also installs the app icon and its symbolic variant into `share/icons/hicolor`.
+
 ## Flatpak
 
 ```sh

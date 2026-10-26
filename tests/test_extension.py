@@ -29,6 +29,34 @@ def _run(args, **kwargs):
     return subprocess.run(args, capture_output=True, text=True, timeout=60, **kwargs)
 
 
+STACK_FRAME = re.compile(r"^\s*\S*@\S+:\d+(:\d+)?\s*$")
+
+
+def extension_js_errors(log, uuids=(UUID, PROBE_UUID)):
+    """JS ERROR blocks (message plus stack frames) that mention one of uuids.
+
+    Errors from other parts of the shell are ignored: a throwaway headless
+    session logs unrelated ones that say nothing about these extensions."""
+    blocks = []
+    current = None
+    for line in log.splitlines():
+        if "JS ERROR" in line:
+            current = [line]
+            blocks.append(current)
+        elif current is not None and STACK_FRAME.match(line):
+            current.append(line)
+        else:
+            current = None
+    texts = ("\n".join(block) for block in blocks)
+    return [text for text in texts if any(uuid in text for uuid in uuids)]
+
+
+def shell_major_version():
+    output = _run([GNOME_SHELL, "--version"]).stdout
+    match = re.search(r"GNOME Shell (\d+)", output)
+    return match.group(1) if match else None
+
+
 @unittest.skipUnless(GJS, "gjs is not installed")
 class StreakLogicTests(unittest.TestCase):
     def test_gjs_streak_suite_passes(self):
@@ -36,8 +64,16 @@ class StreakLogicTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertNotIn("FAIL", result.stdout)
 
+    def test_gjs_reminder_suite_passes(self):
+        result = _run([GJS, "-m", str(EXTENSION_ROOT / "tests" / "test_reminder.js")])
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
     def test_streak_module_is_pure(self):
         source = (EXTENSION_DIR / "streak.js").read_text(encoding="utf-8")
+        self.assertIsNone(re.search(r"^\s*import\b|\bimport\s*\(", source, re.MULTILINE))
+
+    def test_reminder_module_is_pure(self):
+        source = (EXTENSION_DIR / "reminder.js").read_text(encoding="utf-8")
         self.assertIsNone(re.search(r"^\s*import\b|\bimport\s*\(", source, re.MULTILINE))
 
 
@@ -204,15 +240,38 @@ class HeadlessShellTests(unittest.TestCase):
                     os.killpg(shell.pid, signal.SIGKILL)
                     shell.wait()
         log_text = (root / "shell.log").read_text(encoding="utf-8", errors="replace")
-        if not result_path.exists():
-            self.skipTest(f"headless gnome-shell gave no probe result:\n{log_text[-2000:]}")
+        # gnome-shell is installed, so a missing result is a real failure.
+        self.assertTrue(
+            result_path.exists(), f"headless gnome-shell gave no probe result:\n{log_text[-2000:]}"
+        )
         return json.loads(result_path.read_text(encoding="utf-8")), log_text
+
+    def test_shell_version_is_supported_by_extension_and_probe(self):
+        version = shell_major_version()
+        self.assertIsNotNone(version, "could not read the gnome-shell version")
+        for directory in (EXTENSION_DIR, PROBE_DIR):
+            with self.subTest(uuid=directory.name):
+                metadata = json.loads((directory / "metadata.json").read_text(encoding="utf-8"))
+                self.assertIn(version, metadata["shell-version"])
 
     def test_label_keeps_its_text_width_in_a_crowded_panel(self):
         with tempfile.TemporaryDirectory() as tmp:
             result, log = self._run_shell(Path(tmp))
         self.assertNotIn("error", result, log[-2000:])
-        self.assertNotIn("JS ERROR", log)
+        self.assertEqual(extension_js_errors(log), [])
+        # The probe really crowded the panel: the right box was given less than
+        # it asked for, and the room left for the streak button was below its
+        # relaxed natural width.
+        right = result["squeezedRightBox"]
+        self.assertGreater(result["fillerWidth"], 0, result)
+        self.assertLess(right["allocWidth"], right["natWidth"], result)
+        room = result["sideWidth"] - result["fillerWidth"] - (
+            right["natWidth"] - result["fillerWidth"] - result["squeezedButton"]["natWidth"]
+        )
+        self.assertLess(room, result["relaxedButton"]["natWidth"], result)
+        self.assertLess(
+            result["squeezedButton"]["allocWidth"], result["relaxedButton"]["allocWidth"], result
+        )
         for state in ("relaxed", "squeezed"):
             with self.subTest(state=state):
                 label = result[state]
@@ -222,6 +281,32 @@ class HeadlessShellTests(unittest.TestCase):
                 self.assertGreater(label["natWidth"], 0)
                 self.assertGreaterEqual(label["allocWidth"], label["natWidth"], label)
                 self.assertEqual(label["minWidth"], label["natWidth"], label)
+
+
+class ExtensionJsErrorFilterTests(unittest.TestCase):
+    def test_keeps_errors_from_our_extensions_only(self):
+        log = "\n".join(
+            [
+                "gnome-shell: starting",
+                "JS ERROR: TypeError: x is undefined",
+                "_init@resource:///org/gnome/shell/ui/status/network.js:12:5",
+                f"JS ERROR: Extension {UUID}: Error: boom",
+                f"enable@file:///tmp/home/extensions/{UUID}/extension.js:40:9",
+                "JS ERROR: Error: bad",
+                f"_step@file:///tmp/home/extensions/{PROBE_UUID}/extension.js:50:13",
+                "@resource:///org/gnome/shell/ui/init.js:21:20",
+                f"unrelated line mentioning {UUID}",
+            ]
+        )
+        errors = extension_js_errors(log)
+        self.assertEqual(len(errors), 2, errors)
+        self.assertIn("Error: boom", errors[0])
+        self.assertIn("Error: bad", errors[1])
+        self.assertNotIn("unrelated", errors[1])
+
+    def test_ignores_a_log_with_only_foreign_errors(self):
+        log = "JS ERROR: TypeError: x is undefined\n_init@resource:///org/gnome/shell/ui/panel.js:1:1"
+        self.assertEqual(extension_js_errors(log), [])
 
 
 @unittest.skipUnless(GNOME_EXTENSIONS, "gnome-extensions is not installed")
@@ -238,6 +323,7 @@ class PackTests(unittest.TestCase):
                     str(EXTENSION_DIR),
                     "--podir=../po",
                     "--extra-source=streak.js",
+                    "--extra-source=reminder.js",
                     "--force",
                     "-o",
                     out,
@@ -251,6 +337,7 @@ class PackTests(unittest.TestCase):
         for name in (
             "extension.js",
             "streak.js",
+            "reminder.js",
             "metadata.json",
             "stylesheet.css",
             f"locale/es/LC_MESSAGES/{domain}.mo",

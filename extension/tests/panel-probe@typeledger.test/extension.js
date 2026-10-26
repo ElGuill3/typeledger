@@ -30,6 +30,12 @@ function measure(label) {
     };
 }
 
+function measureBox(actor) {
+    const [minWidth, natWidth] = actor.get_preferred_width(-1);
+    const box = actor.get_allocation_box();
+    return {minWidth, natWidth, allocWidth: box.x2 - box.x1};
+}
+
 export default class PanelProbeExtension extends Extension {
     enable() {
         this._outDir = GLib.getenv('TYPELEDGER_PROBE_OUT');
@@ -39,6 +45,15 @@ export default class PanelProbeExtension extends Extension {
     }
 
     _step() {
+        try {
+            return this._measureStep();
+        } catch (e) {
+            this._finish({error: `${e}\n${e.stack}`});
+            return GLib.SOURCE_REMOVE;
+        }
+    }
+
+    _measureStep() {
         this._elapsed += POLL_MS;
         if (this._elapsed > TIMEOUT_MS) {
             this._finish({error: 'timed out waiting for the indicator'});
@@ -51,6 +66,7 @@ export default class PanelProbeExtension extends Extension {
 
         if (!this._filler) {
             this._relaxed = measure(label);
+            this._relaxedButton = measureBox(indicator.container);
             const [, centerWidth] = Main.panel._centerBox.get_preferred_width(-1);
             const [, rightWidth] = Main.panel._rightBox.get_preferred_width(-1);
             const [, buttonWidth] = indicator.container.get_preferred_width(-1);
@@ -59,6 +75,7 @@ export default class PanelProbeExtension extends Extension {
             this._filler = new St.Widget({width: fillerWidth});
             Main.panel._rightBox.insert_child_at_index(this._filler, 0);
             this._fillerWidth = fillerWidth;
+            this._sideWidth = sideWidth;
             return GLib.SOURCE_CONTINUE;
         }
 
@@ -66,6 +83,10 @@ export default class PanelProbeExtension extends Extension {
             relaxed: this._relaxed,
             squeezed: measure(label),
             fillerWidth: this._fillerWidth,
+            sideWidth: this._sideWidth,
+            relaxedButton: this._relaxedButton,
+            squeezedButton: measureBox(indicator.container),
+            squeezedRightBox: measureBox(Main.panel._rightBox),
         });
         return GLib.SOURCE_REMOVE;
     }

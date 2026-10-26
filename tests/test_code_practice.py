@@ -123,6 +123,39 @@ class AutoIndentTest(unittest.TestCase):
         self.assertTrue(session.finished)
         self.assertEqual(session.finish().accuracy, 1.0)
 
+    def test_skipped_indent_counts_for_wpm_but_not_keystrokes_or_accuracy(self):
+        # Documented behavior: auto-filled indent is CORRECT text, so it counts in
+        # correct_chars and WPM, but it was never typed, so it stays out of
+        # keystrokes, raw WPM, accuracy and char_stats.
+        session = code_session("if x:\n    y")
+        clock = session._clock
+        for ch in "if x:\n":
+            session.type_char(ch)
+        clock.now = 60.0
+        session.type_char("y")
+        result = session.finish()
+        self.assertEqual(result.duration_s, 60.0)
+        self.assertEqual(result.correct_chars, 11)  # 7 typed + 4 indent
+        self.assertAlmostEqual(result.wpm, 11 / 5)
+        self.assertEqual(result.keystrokes, 7)
+        self.assertAlmostEqual(result.raw_wpm, 7 / 5)
+        self.assertEqual(result.accuracy, 1.0)
+        self.assertEqual(sum(s.hits + s.misses for s in result.char_stats.values()), 7)
+        self.assertEqual(result.char_stats[" "].hits, 1)
+
+    def test_skipped_indent_does_not_dilute_accuracy(self):
+        session = code_session("if x:\n    y")
+        for ch in "if x:q":  # wrong Enter still skips the indent
+            session.type_char(ch)
+        session.type_char("y")
+        result = session.finish()
+        self.assertEqual(result.correct_chars, 10)  # 6 typed + 4 indent
+        self.assertEqual(result.incorrect_chars, 1)
+        self.assertEqual(result.keystrokes, 7)
+        self.assertAlmostEqual(result.accuracy, 6 / 7)
+        self.assertEqual(result.char_stats["\n"].misses, 1)
+        self.assertEqual(sum(s.hits for s in result.char_stats.values()), 6)
+
     def test_prose_session_does_not_skip_spaces(self):
         session = code_session(auto_indent=False)
         for ch in "if x:\n":

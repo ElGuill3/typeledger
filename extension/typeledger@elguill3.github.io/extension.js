@@ -11,9 +11,11 @@ import St from 'gi://St';
 
 import {Extension, gettext as _, ngettext} from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import * as MessageTray from 'resource:///org/gnome/shell/ui/messageTray.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
+import {REMINDER_HOUR, parseState, secondsUntilReminder, serializeState, shouldRemind} from './reminder.js';
 import {computeStreak, localIsoDate, newestSummary, parseSummary} from './streak.js';
 
 const APP_ID = 'io.github.elguill3.TypeLedger';
@@ -27,6 +29,12 @@ function summaryPaths() {
         GLib.build_filenamev([GLib.get_user_data_dir(), 'typeledger', 'summary.json']),
         GLib.build_filenamev([GLib.get_home_dir(), '.var', 'app', APP_ID, 'data', 'typeledger', 'summary.json']),
     ];
+}
+
+// Keeps the "last reminded day" across disable/enable without a GSettings schema.
+function stateFile() {
+    return Gio.File.new_for_path(
+        GLib.build_filenamev([GLib.get_user_cache_dir(), 'typeledger-extension', 'state.json']));
 }
 
 function secondsUntilTomorrow() {
@@ -69,6 +77,11 @@ class StreakIndicator extends PanelMenu.Button {
         this._generation = 0;
         this._reloadId = 0;
         this._dayCheckId = 0;
+        this._reminderId = 0;
+        this._summaryLoaded = false;
+        this._stateLoaded = false;
+        this._lastRemindedIso = null;
+        this._source = null;
         this._cancellable = new Gio.Cancellable();
         this._files = summaryPaths().map(path => Gio.File.new_for_path(path));
         this._monitors = [];
@@ -85,6 +98,8 @@ class StreakIndicator extends PanelMenu.Button {
 
         this._sync();
         this._scheduleDayCheck();
+        this._scheduleReminder();
+        this._loadState();
         this._reload();
     }
 
@@ -110,7 +125,9 @@ class StreakIndicator extends PanelMenu.Button {
             if (generation !== this._generation || this._cancellable.is_cancelled())
                 return;
             this._summary = newestSummary(summaries);
+            this._summaryLoaded = true;
             this._sync();
+            this._maybeRemind();
         }).catch(e => console.error(`TypeLedger Streak: reload failed: ${e.message}`));
     }
 
@@ -135,17 +152,119 @@ class StreakIndicator extends PanelMenu.Button {
         this._dayCheckId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, seconds, () => {
             this._dayCheckId = 0;
             this._sync();
+            this._maybeRemind();
             this._scheduleDayCheck();
             return GLib.SOURCE_REMOVE;
         });
     }
 
+    _scheduleReminder() {
+        const now = GLib.DateTime.new_now_local();
+        const secondsSinceMidnight = now.get_hour() * 3600 + now.get_minute() * 60 + now.get_second();
+        // One extra second lands just after the hour starts.
+        const seconds = Math.min(
+            secondsUntilReminder({secondsSinceMidnight, reminderHour: REMINDER_HOUR}) + 1, MAX_DAY_CHECK_S);
+        this._reminderId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, seconds, () => {
+            this._reminderId = 0;
+            this._maybeRemind();
+            this._scheduleReminder();
+            return GLib.SOURCE_REMOVE;
+        });
+    }
+
+    _loadState() {
+        const file = stateFile();
+        file.load_contents_async(this._cancellable, (source, result) => {
+            let text = null;
+            try {
+                const [, contents] = source.load_contents_finish(result);
+                text = new TextDecoder().decode(contents);
+            } catch (e) {
+                if (e.matches?.(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
+                    return;
+                if (!e.matches?.(Gio.IOErrorEnum, Gio.IOErrorEnum.NOT_FOUND))
+                    console.warn(`TypeLedger Streak: cannot read ${file.get_path()}: ${e.message}`);
+            }
+            this._lastRemindedIso = parseState(text).lastRemindedIso;
+            this._stateLoaded = true;
+            this._maybeRemind();
+        });
+    }
+
+    _saveState() {
+        const file = stateFile();
+        try {
+            GLib.mkdir_with_parents(file.get_parent().get_path(), 0o700);
+            // Written synchronously so a disable right after the reminder
+            // cannot lose it; the file is tiny and written at most once a day.
+            const bytes = new TextEncoder().encode(serializeState({lastRemindedIso: this._lastRemindedIso}));
+            file.replace_contents(bytes, null, false, Gio.FileCreateFlags.REPLACE_DESTINATION, null);
+        } catch (e) {
+            console.error(`TypeLedger Streak: cannot write ${file.get_path()}: ${e.message}`);
+        }
+    }
+
+    _maybeRemind() {
+        // Before both files are read, "no practice" and "never reminded" are
+        // only defaults and could produce a wrong or repeated reminder.
+        if (!this._summaryLoaded || !this._stateLoaded)
+            return;
+        const todayIso = localIsoDate(new Date());
+        const streak = this._streak(todayIso);
+        if (!shouldRemind({
+            todayIso,
+            nowHour: GLib.DateTime.new_now_local().get_hour(),
+            practicedToday: streak.practicedToday,
+            lastRemindedIso: this._lastRemindedIso,
+            reminderHour: REMINDER_HOUR,
+        }))
+            return;
+
+        this._lastRemindedIso = todayIso;
+        this._saveState();
+        this._notify(streak.current);
+    }
+
+    _notify(current) {
+        if (!this._source) {
+            this._source = new MessageTray.Source({
+                title: 'TypeLedger',
+                icon: new Gio.ThemedIcon({names: [APP_ID, 'input-keyboard-symbolic']}),
+            });
+            // A source destroys itself once its last notification is gone.
+            this._source.connectObject('destroy', () => {
+                this._source = null;
+            }, this);
+            Main.messageTray.add(this._source);
+        }
+        const body = current > 0
+            ? ngettext(
+                'Your streak is %d day — practice today to keep it.',
+                'Your streak is %d days — practice today to keep it.',
+                current
+            ).replace('%d', String(current))
+            : _('Practice today to start a streak.');
+        const notification = new MessageTray.Notification({
+            source: this._source,
+            title: _('Keep your streak going'),
+            body,
+        });
+        notification.connect('activated', () => this._openApp());
+        notification.addAction(_('Practice now'), () => this._openApp());
+        this._source.addNotification(notification);
+    }
+
+    _streak(todayIso) {
+        const summary = this._summary;
+        if (summary === null || summary.practiced_days.length === 0)
+            return {current: 0, practicedToday: false};
+        return computeStreak(summary.practiced_days, todayIso);
+    }
+
     _sync() {
         const summary = this._summary;
         const hasPractice = summary !== null && summary.practiced_days.length > 0;
-        const streak = hasPractice
-            ? computeStreak(summary.practiced_days, localIsoDate(new Date()))
-            : {current: 0, practicedToday: false};
+        const streak = this._streak(localIsoDate(new Date()));
 
         this._label.text = `🔥 ${streak.current}`;
         if (streak.practicedToday)
@@ -206,6 +325,15 @@ class StreakIndicator extends PanelMenu.Button {
         if (this._dayCheckId) {
             GLib.source_remove(this._dayCheckId);
             this._dayCheckId = 0;
+        }
+        if (this._reminderId) {
+            GLib.source_remove(this._reminderId);
+            this._reminderId = 0;
+        }
+        if (this._source) {
+            this._source.disconnectObject(this);
+            this._source.destroy(MessageTray.NotificationDestroyedReason.SOURCE_CLOSED);
+            this._source = null;
         }
         for (const monitor of this._monitors) {
             monitor.disconnectObject(this);
