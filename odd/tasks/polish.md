@@ -12,12 +12,15 @@ Objective: close the remaining items after the four planned phases. Branch: `fea
 
 ## Tasks
 
-- T1 [S1] App icon + meson install + test — delegated (writer A) — pending
-- T2 [S2] Daily reminder in the extension + GJS tests + es strings — delegated (writer B) — pending
-- T3 [S3] Review follow-up fixes — delegated (writer C) — pending
-- T4 [S4] Flatpak build verification — blocked (waits for the user's approval to install flatpak-builder)
+- T1 [S1] App icon + meson install + test — delegated (writer A) — done (RED 3 failures → GREEN 3; meson install lists both icons; parent rendered 128/64/32/16 on light and dark)
+- T2 [S2] Daily reminder in the extension + GJS tests + es strings — delegated (writer B) — done (RED stub 5/14 → GREEN 14/14; headless shell: 1 notification, none after disable/enable, none when practiced or before the hour, Spanish strings verified; click on Practice now not verified)
+- T3 [S3] Review follow-up fixes — delegated (writer C) — done (6d74b85; token counter RED→GREEN; pinning tests shown failing with a wrong expectation; headless test fails instead of skipping; suite 241 OK incl. -W error::ResourceWarning)
+- T4 [S4] Flatpak build verification — in_progress (user approved; installed org.flatpak.Builder + org.gnome.Sdk//50 with --user) — done (3210804: manifest `skip` for build dirs; flatpak-builder build exit 0 in _build/flatpak, files bin/typeledger, desktop, icons, es .mo, data; `flatpak-builder --run` ran 8 s without traceback (build sandbox has no session bus, so only warnings); not installed as a Flatpak app, not run from an installed Flatpak)
 
 ## Log
 
 - L1 (2026-10-25, user): "podes seguir con lo que falte? yo digo que si funciona, lo que pasa es que por ciertas razones no puedo estar cerrando e inicnado sesion"
 - L2 Assumptions S1-S2 stated to the user before starting.
+- L3 (user): "si" — to installing flatpak-builder (asked: "¿instalo flatpak-builder, que baja el SDK de GNOME de unos cientos de MB, o lo dejamos sin verificar?").
+- L4 T2 accepted. Known: screen lock disables extensions and dismisses an unread reminder, which then does not come back that day. Test follow-ups for tests/test_extension.py (unconditional reminder.js pack, zip check, GJS reminder suite, purity) handed to the T3 writer.
+- L5 First flatpak-builder run failed: the agent's private /tmp is not visible to the host-side build helper; build moved to the gitignored `_build/flatpak`, and the manifest's dir source now skips build dirs.
