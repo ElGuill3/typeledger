@@ -1,0 +1,5 @@
+/* Dimmed while today has no practice yet. St has no opacity property, so a
+   mid grey is used that stays readable on both light and dark top bars. */
+.typeledger-streak-label.typeledger-streak-pending {
+  color: #8a8a8f;
+}
