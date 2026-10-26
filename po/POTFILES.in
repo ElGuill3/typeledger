@@ -2,3 +2,4 @@ data/io.github.elguill3.TypeLedger.desktop.in
 typeledger/application.py
 typeledger/window.py
 typeledger/ui/keyboard_view.py
+typeledger/ui/practice_page.py

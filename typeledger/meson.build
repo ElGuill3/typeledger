@@ -12,9 +12,12 @@ python.install_sources(
   files(
     'core/__init__.py',
     'core/engine.py',
+    'core/keys.py',
     'core/layout.py',
     'core/models.py',
+    'core/practice.py',
     'core/storage.py',
+    'core/text_display.py',
     'core/textgen.py',
   ),
   subdir: 'typeledger/core',
@@ -32,6 +35,7 @@ python.install_sources(
   files(
     'ui/__init__.py',
     'ui/keyboard_view.py',
+    'ui/practice_page.py',
   ),
   subdir: 'typeledger/ui',
 )
