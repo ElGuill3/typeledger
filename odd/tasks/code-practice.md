@@ -15,9 +15,11 @@ Objective: practice typing real code (symbols, brackets, newlines) in the same p
 
 ## Tasks
 
-- T1 [S1-S7] Code practice end to end: language ids + validation, snippet data + generator, engine auto-indent, newline-aware wrapping/markup, Enter handling and hints, dropdown, heat for "\n", translations — delegated (context backstop) — pending
+- T1 [S1-S7] Code practice end to end: language ids + validation, snippet data + generator, engine auto-indent, newline-aware wrapping/markup, Enter handling and hints, dropdown, heat for "\n", translations — delegated (context backstop) — done (a58ce1b; RED 163 tests failures=2 errors=7 → GREEN 191 OK, also under -W error::ResourceWarning; parent screenshot of a Python session checked)
 
 ## Log
 
 - L1 (2026-10-25, user): "si porfa, una cosa para que tengas en cuenta, desconecte el teclado, puedes seguir trabajando asi? sino nos esperamos" — push of `feat/progress` done; phase 3 started (user had confirmed "arrancamos la fase 3" path in the same reply).
 - L2 Assumptions S1-S4 stated to the user before starting.
+- L3 Worker assumptions: no blank lines inside snippets; snippet lines ≤ 56 columns (page LINE_WIDTH); typed "\n" also shown as ⏎. Auto-filled indent counts as correct chars (slightly raises WPM; not keystrokes/accuracy). UX gap: the cursor's line scrolls to the top, so the just-typed line disappears (loses code context).
+- L4 RDD: assess 7a3c557..a58ce1b native high (process_boundary signal on typeledger/data/code/go.txt — display-only practice text). Native review lineage review-16325e6da214759d, lenses risk+reliability: APPROVED, acknowledged (authority burned). Non-blocking findings for later: R3-indent-wpm-unpinned (engine.py:139-145, WARNING: auto-indent WPM effect not pinned by a test), R3-partial-token-counter (practice_page.py:225-226), R3-vacuous-snippet-checks (tests/test_codegen.py:25). Not pushed yet.
