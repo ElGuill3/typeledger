@@ -6,6 +6,7 @@ import Gio from 'gi://Gio';
 import GioUnix from 'gi://GioUnix';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
+import Pango from 'gi://Pango';
 import St from 'gi://St';
 
 import {Extension, gettext as _, ngettext} from 'resource:///org/gnome/shell/extensions/extension.js';
@@ -47,6 +48,10 @@ class StreakIndicator extends PanelMenu.Button {
             y_align: Clutter.ActorAlign.CENTER,
             style_class: 'typeledger-streak-label',
         });
+        // St.Label ellipsizes by default, which makes its minimum width ~1px.
+        // A crowded top bar then shrinks this button down to its padding and
+        // the streak disappears, so keep the full text as the minimum width.
+        this._label.clutter_text.ellipsize = Pango.EllipsizeMode.NONE;
         this.add_child(this._label);
 
         this._currentItem = this._addInfoItem();

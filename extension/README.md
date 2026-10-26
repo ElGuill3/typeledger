@@ -55,6 +55,11 @@ gjs -m extension/tests/test_streak.js
 
 The Python suite (`/usr/bin/python3 -m unittest discover -s tests -t .`) also
 runs it, validates `metadata.json`, the Spanish catalog and the packed zip.
+When `gnome-shell` and `dbus-run-session` are available it also starts a
+throwaway headless GNOME Shell (temporary HOME, XDG dirs, D-Bus session and
+keyfile GSettings, so your session is never touched) with the test-only
+`tests/panel-probe@typeledger.test` extension, which crowds the top bar and
+checks that the label keeps its full `🔥 N` width.
 
 ## Translations
 
