@@ -14,10 +14,11 @@ Objective: a GNOME Shell extension that shows the practice streak in the top bar
 ## Tasks
 
 - T1 [S3] App: `core/summary.py` builds and atomically writes `summary.json`; written at startup and after each saved session — delegated (writer A) — done (RED ModuleNotFoundError/ImportError → GREEN 24 tests; suite minus in-progress test_extension 213 OK incl. -W error::ResourceWarning)
-- T2 [S1, S2, S4, S5, S6] Extension: `extension/typeledger@elguill3.github.io/` (metadata, extension.js, pure streak/summary logic module, stylesheet, es translation), GJS tests run from the Python suite, pack check, README install steps — delegated (writer B) — pending
+- T2 [S1, S2, S4, S5, S6] Extension: `extension/typeledger@elguill3.github.io/` (metadata, extension.js, pure streak/summary logic module, stylesheet, es translation), GJS tests run from the Python suite, pack check, README install steps — delegated (writer B) — done (035b87a; RED ImportError/6 errors → GREEN 18 GJS + 11 Python tests; suite 224 OK incl. -W error::ResourceWarning; pack OK; isolated headless gnome-shell 50.5: ACTIVE, 3 disable/enable cycles clean, no JS errors; rendered label/menu and app launch not verified)
 
 ## Log
 
 - L1 (2026-10-25, user): "si porfa, sube los cambios, y haz el cambio, luego avanza con la fase 4" — pushed feat/code-practice, previous-line context fix 4c177bd pushed, phase 4 started.
 - L2 Assumptions S1-S5 stated to the user before starting. Installing/enabling the extension in the user's session writes outside the project (~/.local/share/gnome-shell/extensions) and needs the user's go-ahead.
 - L3 T1 accepted: 400 cap = 400 most recent practiced days; future days excluded; export only after a saved session with keystrokes; in-memory fallback never exports.
+- L4 T2 accepted after parent review of disable/destroy cleanup. Deviations: GioUnix.DesktopAppInfo (Gio one deprecated); dim = fixed grey (#8a8a8f) since St CSS has no opacity; date check re-armed hourly; menu open refreshes. RDD assess 4c177bd..035b87a: medium, reviewDue false. Daily reminder from the original design deferred. Not installed in the user's session (needs approval); branch not pushed.
