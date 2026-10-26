@@ -1,6 +1,7 @@
 import gettext
 import locale
 import os
+import sqlite3
 import sys
 
 import gi
@@ -11,6 +12,7 @@ gi.require_version("Adw", "1")
 from gi.repository import Adw, Gio  # noqa: E402
 
 from typeledger import APP_ID, VERSION  # noqa: E402
+from typeledger.core.storage import Storage, default_db_path  # noqa: E402
 from typeledger.window import TypeLedgerWindow  # noqa: E402
 
 _ = gettext.gettext
@@ -26,6 +28,15 @@ def setup_translations():
     gettext.textdomain("typeledger")
 
 
+def open_storage():
+    """Open the history database, falling back to memory if it cannot be opened."""
+    try:
+        return Storage(default_db_path()), False
+    except (OSError, sqlite3.Error) as error:
+        print(f"typeledger: cannot open history database: {error}", file=sys.stderr)
+        return Storage(":memory:"), True
+
+
 class TypeLedgerApplication(Adw.Application):
     def __init__(self):
         super().__init__(application_id=APP_ID, flags=Gio.ApplicationFlags.DEFAULT_FLAGS)
@@ -33,7 +44,12 @@ class TypeLedgerApplication(Adw.Application):
         self._add_action("about", self._on_about)
 
     def do_activate(self):
-        window = self.props.active_window or TypeLedgerWindow(application=self)
+        window = self.props.active_window
+        if window is None:
+            storage, unavailable = open_storage()
+            window = TypeLedgerWindow(
+                storage, history_unavailable=unavailable, application=self
+            )
         window.present()
 
     def _add_action(self, name, callback, shortcuts=None):

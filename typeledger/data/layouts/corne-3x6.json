@@ -1,0 +1,69 @@
+{
+  "id": "corne-3x6",
+  "name": "Corne 3x6 + 3 thumbs",
+  "keys": [
+    {"id": "L0C0", "x": 0, "y": 0.375, "w": 1, "h": 1, "rotation": 0, "hand": "left", "finger": "pinky"},
+    {"id": "L0C1", "x": 1, "y": 0.375, "w": 1, "h": 1, "rotation": 0, "hand": "left", "finger": "pinky"},
+    {"id": "L0C2", "x": 2, "y": 0.125, "w": 1, "h": 1, "rotation": 0, "hand": "left", "finger": "ring"},
+    {"id": "L0C3", "x": 3, "y": 0, "w": 1, "h": 1, "rotation": 0, "hand": "left", "finger": "middle"},
+    {"id": "L0C4", "x": 4, "y": 0.125, "w": 1, "h": 1, "rotation": 0, "hand": "left", "finger": "index"},
+    {"id": "L0C5", "x": 5, "y": 0.25, "w": 1, "h": 1, "rotation": 0, "hand": "left", "finger": "index"},
+    {"id": "R0C0", "x": 8, "y": 0.25, "w": 1, "h": 1, "rotation": 0, "hand": "right", "finger": "index"},
+    {"id": "R0C1", "x": 9, "y": 0.125, "w": 1, "h": 1, "rotation": 0, "hand": "right", "finger": "index"},
+    {"id": "R0C2", "x": 10, "y": 0, "w": 1, "h": 1, "rotation": 0, "hand": "right", "finger": "middle"},
+    {"id": "R0C3", "x": 11, "y": 0.125, "w": 1, "h": 1, "rotation": 0, "hand": "right", "finger": "ring"},
+    {"id": "R0C4", "x": 12, "y": 0.375, "w": 1, "h": 1, "rotation": 0, "hand": "right", "finger": "pinky"},
+    {"id": "R0C5", "x": 13, "y": 0.375, "w": 1, "h": 1, "rotation": 0, "hand": "right", "finger": "pinky"},
+    {"id": "L1C0", "x": 0, "y": 1.375, "w": 1, "h": 1, "rotation": 0, "hand": "left", "finger": "pinky"},
+    {"id": "L1C1", "x": 1, "y": 1.375, "w": 1, "h": 1, "rotation": 0, "hand": "left", "finger": "pinky"},
+    {"id": "L1C2", "x": 2, "y": 1.125, "w": 1, "h": 1, "rotation": 0, "hand": "left", "finger": "ring"},
+    {"id": "L1C3", "x": 3, "y": 1, "w": 1, "h": 1, "rotation": 0, "hand": "left", "finger": "middle"},
+    {"id": "L1C4", "x": 4, "y": 1.125, "w": 1, "h": 1, "rotation": 0, "hand": "left", "finger": "index"},
+    {"id": "L1C5", "x": 5, "y": 1.25, "w": 1, "h": 1, "rotation": 0, "hand": "left", "finger": "index"},
+    {"id": "R1C0", "x": 8, "y": 1.25, "w": 1, "h": 1, "rotation": 0, "hand": "right", "finger": "index"},
+    {"id": "R1C1", "x": 9, "y": 1.125, "w": 1, "h": 1, "rotation": 0, "hand": "right", "finger": "index"},
+    {"id": "R1C2", "x": 10, "y": 1, "w": 1, "h": 1, "rotation": 0, "hand": "right", "finger": "middle"},
+    {"id": "R1C3", "x": 11, "y": 1.125, "w": 1, "h": 1, "rotation": 0, "hand": "right", "finger": "ring"},
+    {"id": "R1C4", "x": 12, "y": 1.375, "w": 1, "h": 1, "rotation": 0, "hand": "right", "finger": "pinky"},
+    {"id": "R1C5", "x": 13, "y": 1.375, "w": 1, "h": 1, "rotation": 0, "hand": "right", "finger": "pinky"},
+    {"id": "L2C0", "x": 0, "y": 2.375, "w": 1, "h": 1, "rotation": 0, "hand": "left", "finger": "pinky"},
+    {"id": "L2C1", "x": 1, "y": 2.375, "w": 1, "h": 1, "rotation": 0, "hand": "left", "finger": "pinky"},
+    {"id": "L2C2", "x": 2, "y": 2.125, "w": 1, "h": 1, "rotation": 0, "hand": "left", "finger": "ring"},
+    {"id": "L2C3", "x": 3, "y": 2, "w": 1, "h": 1, "rotation": 0, "hand": "left", "finger": "middle"},
+    {"id": "L2C4", "x": 4, "y": 2.125, "w": 1, "h": 1, "rotation": 0, "hand": "left", "finger": "index"},
+    {"id": "L2C5", "x": 5, "y": 2.25, "w": 1, "h": 1, "rotation": 0, "hand": "left", "finger": "index"},
+    {"id": "R2C0", "x": 8, "y": 2.25, "w": 1, "h": 1, "rotation": 0, "hand": "right", "finger": "index"},
+    {"id": "R2C1", "x": 9, "y": 2.125, "w": 1, "h": 1, "rotation": 0, "hand": "right", "finger": "index"},
+    {"id": "R2C2", "x": 10, "y": 2, "w": 1, "h": 1, "rotation": 0, "hand": "right", "finger": "middle"},
+    {"id": "R2C3", "x": 11, "y": 2.125, "w": 1, "h": 1, "rotation": 0, "hand": "right", "finger": "ring"},
+    {"id": "R2C4", "x": 12, "y": 2.375, "w": 1, "h": 1, "rotation": 0, "hand": "right", "finger": "pinky"},
+    {"id": "R2C5", "x": 13, "y": 2.375, "w": 1, "h": 1, "rotation": 0, "hand": "right", "finger": "pinky"},
+    {"id": "LT0", "x": 3, "y": 3.45, "w": 1, "h": 1, "rotation": 0, "hand": "left", "finger": "thumb"},
+    {"id": "LT1", "x": 4.05, "y": 3.55, "w": 1, "h": 1, "rotation": 10, "hand": "left", "finger": "thumb"},
+    {"id": "LT2", "x": 5.2, "y": 3.4, "w": 1, "h": 1.5, "rotation": 25, "hand": "left", "finger": "thumb"},
+    {"id": "RT0", "x": 7.8, "y": 3.4, "w": 1, "h": 1.5, "rotation": -25, "hand": "right", "finger": "thumb"},
+    {"id": "RT1", "x": 8.95, "y": 3.55, "w": 1, "h": 1, "rotation": -10, "hand": "right", "finger": "thumb"},
+    {"id": "RT2", "x": 10, "y": 3.45, "w": 1, "h": 1, "rotation": 0, "hand": "right", "finger": "thumb"}
+  ],
+  "encoders": [],
+  "layers": [
+    [
+      "Tab", "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "Bspc",
+      "Ctrl", "a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'",
+      "Shift", "z", "x", "c", "v", "b", "n", "m", ",", ".", "/", "Esc",
+      "GUI", "MO(1)", "Space", "Enter", "MO(2)", "Alt"
+    ],
+    [
+      "Tab", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "Bspc",
+      "trns", "", "", "", "", "", "", "", "", "", "", "trns",
+      "trns", "", "", "", "", "", "", "", "", "", "", "trns",
+      "trns", "trns", "trns", "trns", "trns", "trns"
+    ],
+    [
+      "Tab", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "Bspc",
+      "Ctrl", "", "", "", "", "", "-", "=", "[", "]", "\\", "`",
+      "Shift", "", "", "", "", "", "_", "+", "{", "}", "|", "~",
+      "trns", "trns", "trns", "trns", "trns", "trns"
+    ]
+  ]
+}
