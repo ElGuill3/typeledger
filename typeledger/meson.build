@@ -12,6 +12,7 @@ python.install_sources(
   files(
     'core/__init__.py',
     'core/engine.py',
+    'core/layout.py',
     'core/models.py',
     'core/storage.py',
     'core/textgen.py',
@@ -30,6 +31,15 @@ python.install_sources(
 python.install_sources(
   files(
     'ui/__init__.py',
+    'ui/keyboard_view.py',
   ),
   subdir: 'typeledger/ui',
+)
+
+python.install_sources(
+  files(
+    'data/layouts/corne-3x6.json',
+    'data/layouts/corne-4x6.json',
+  ),
+  subdir: 'typeledger/data/layouts',
 )
