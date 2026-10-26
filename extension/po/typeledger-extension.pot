@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: typeledger-extension\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-25 19:44-0600\n"
+"POT-Creation-Date: 2026-10-25 21:47-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,44 +18,63 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: typeledger@elguill3.github.io/extension.js:43
+#: typeledger@elguill3.github.io/extension.js:52
 msgid "TypeLedger Streak"
 msgstr ""
 
-#: typeledger@elguill3.github.io/extension.js:57
+#: typeledger@elguill3.github.io/extension.js:70
 msgid "Open TypeLedger"
 msgstr ""
 
-#: typeledger@elguill3.github.io/extension.js:152
+#: typeledger@elguill3.github.io/extension.js:242
+#, javascript-format
+msgid "Your streak is %d day — practice today to keep it."
+msgid_plural "Your streak is %d days — practice today to keep it."
+msgstr[0] ""
+msgstr[1] ""
+
+#: typeledger@elguill3.github.io/extension.js:246
+msgid "Practice today to start a streak."
+msgstr ""
+
+#: typeledger@elguill3.github.io/extension.js:249
+msgid "Keep your streak going"
+msgstr ""
+
+#: typeledger@elguill3.github.io/extension.js:253
+msgid "Practice now"
+msgstr ""
+
+#: typeledger@elguill3.github.io/extension.js:276
 msgid "No practice yet"
 msgstr ""
 
-#: typeledger@elguill3.github.io/extension.js:159
+#: typeledger@elguill3.github.io/extension.js:283
 #, javascript-format
 msgid "Current streak: %d day"
 msgid_plural "Current streak: %d days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: typeledger@elguill3.github.io/extension.js:164
+#: typeledger@elguill3.github.io/extension.js:288
 #, javascript-format
 msgid "Longest streak: %d day"
 msgid_plural "Longest streak: %d days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: typeledger@elguill3.github.io/extension.js:167
+#: typeledger@elguill3.github.io/extension.js:291
 msgid "Practiced today"
 msgstr ""
 
-#: typeledger@elguill3.github.io/extension.js:168
+#: typeledger@elguill3.github.io/extension.js:292
 msgid "Not practiced yet today"
 msgstr ""
 
-#: typeledger@elguill3.github.io/extension.js:170
+#: typeledger@elguill3.github.io/extension.js:294
 msgid "Last 7 days: {wpm} WPM · {accuracy}%"
 msgstr ""
 
-#: typeledger@elguill3.github.io/extension.js:173
+#: typeledger@elguill3.github.io/extension.js:297
 msgid "No sessions in the last 7 days"
 msgstr ""

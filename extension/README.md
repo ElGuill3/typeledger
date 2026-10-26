@@ -5,6 +5,13 @@ practice today) with a menu holding the current and longest streak, today's
 status, the last 7 days' average WPM and accuracy, and an "Open TypeLedger"
 action.
 
+At 20:00 (local time), if you have not practiced today, it shows one "Keep
+your streak going" notification with your current streak and a "Practice now"
+button that opens the app. There is at most one reminder per day, also across
+disabling and enabling the extension: the last reminded day is kept in
+`~/.cache/typeledger-extension/state.json` (or `$XDG_CACHE_HOME`). The hour is
+the `REMINDER_HOUR` constant in `reminder.js`; there are no settings yet.
+
 - UUID: `typeledger@elguill3.github.io`
 - Supports GNOME Shell 50.
 - Reads only the `summary.json` file the app exports, never the SQLite history:
@@ -20,7 +27,8 @@ From the repository root:
 ```sh
 mkdir -p _build/extension  # pack crashes if the output directory is missing
 gnome-extensions pack extension/typeledger@elguill3.github.io \
-    --podir=../po --extra-source=streak.js --force -o _build/extension
+    --podir=../po --extra-source=streak.js --extra-source=reminder.js \
+    --force -o _build/extension
 ```
 
 This creates `_build/extension/typeledger@elguill3.github.io.shell-extension.zip`
@@ -47,10 +55,11 @@ journalctl -f -o cat /usr/bin/gnome-shell
 
 ## Tests
 
-The pure streak logic runs under plain GJS:
+The pure streak and reminder logic runs under plain GJS:
 
 ```sh
 gjs -m extension/tests/test_streak.js
+gjs -m extension/tests/test_reminder.js
 ```
 
 The Python suite (`/usr/bin/python3 -m unittest discover -s tests -t .`) also
