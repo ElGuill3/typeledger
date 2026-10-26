@@ -1,5 +1,7 @@
 data/io.github.elguill3.TypeLedger.desktop.in
 typeledger/application.py
 typeledger/window.py
+typeledger/ui/chart_view.py
 typeledger/ui/keyboard_view.py
 typeledger/ui/practice_page.py
+typeledger/ui/progress_page.py

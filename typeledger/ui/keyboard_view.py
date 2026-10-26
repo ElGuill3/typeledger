@@ -14,6 +14,7 @@ _ = gettext.gettext
 PADDING = 12  # px around the drawing
 KEY_GAP = 0.08  # key units between neighbouring keycaps
 CORNER_RADIUS = 0.15  # key units
+HEAT_RGB = (0xE0 / 255, 0x1B / 255, 0x24 / 255)  # warm red for the error heatmap
 
 
 def _display_label(label):
@@ -43,7 +44,7 @@ def _display_label(label):
 
 
 class KeyboardView(Gtk.DrawingArea):
-    """Draws a KeyboardLayout, highlighting pressed and hinted keys."""
+    """Draws a KeyboardLayout, highlighting pressed, hinted and heated keys."""
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -51,6 +52,7 @@ class KeyboardView(Gtk.DrawingArea):
         self._layer = 0
         self._pressed = frozenset()
         self._hint = frozenset()
+        self._heat = {}
         self.set_content_height(260)
         self.set_hexpand(True)
         self.set_draw_func(lambda _area, cr, width, height: self.draw_to(cr, width, height))
@@ -70,6 +72,11 @@ class KeyboardView(Gtk.DrawingArea):
 
     def set_hint(self, key_ids):
         self._hint = frozenset(key_ids)
+        self.queue_draw()
+
+    def set_heat(self, levels):
+        """Paint keys by level (key id -> 0..1, clamped); an empty mapping clears."""
+        self._heat = {key_id: max(0.0, min(1.0, float(level))) for key_id, level in levels.items()}
         self.queue_draw()
 
     def draw_to(self, cr, width, height):
@@ -110,11 +117,15 @@ class KeyboardView(Gtk.DrawingArea):
             _rounded_rect(cr, -w / 2, -h / 2, w, h, CORNER_RADIUS * scale)
 
             pressed = key.id in self._pressed
+            heat = self._heat.get(key.id, 0.0)
             if pressed:
                 cr.set_source_rgba(accent.red, accent.green, accent.blue, 1.0)
                 cr.fill_preserve()
             elif key.id in self._hint:
                 cr.set_source_rgba(accent.red, accent.green, accent.blue, 0.35)
+                cr.fill_preserve()
+            elif heat > 0:
+                cr.set_source_rgba(*HEAT_RGB, 0.15 + 0.75 * heat)
                 cr.fill_preserve()
             cr.set_source_rgba(fg.red, fg.green, fg.blue, 0.55 * fg.alpha)
             cr.stroke()
@@ -124,7 +135,7 @@ class KeyboardView(Gtk.DrawingArea):
             pango_layout.set_font_description(font if len(text) <= 2 else small_font)
             pango_layout.set_text(text, -1)
             _ink, logical = pango_layout.get_pixel_extents()
-            if pressed:
+            if pressed or (heat > 0.5 and key.id not in self._hint):
                 cr.set_source_rgba(1.0, 1.0, 1.0, 1.0)
             else:
                 cr.set_source_rgba(fg.red, fg.green, fg.blue, fg.alpha)

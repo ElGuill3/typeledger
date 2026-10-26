@@ -18,11 +18,11 @@ class FakeClock:
         return self.now
 
 
-def make_practice(settings, storage=None):
+def make_practice(settings, storage):
     clock = FakeClock()
     practice = Practice(
         settings,
-        storage if storage is not None else Storage(":memory:"),
+        storage,
         rng=random.Random(7),
         clock=clock,
         now=lambda: START,
@@ -33,6 +33,7 @@ def make_practice(settings, storage=None):
 class WordsModeTest(unittest.TestCase):
     def setUp(self):
         self.storage = Storage(":memory:")
+        self.addCleanup(self.storage.close)
         self.practice, self.clock = make_practice(
             PracticeSettings("en", MODE_WORDS, 10, "corne-4x6"), self.storage
         )
@@ -70,6 +71,7 @@ class WordsModeTest(unittest.TestCase):
 class TimeModeTest(unittest.TestCase):
     def setUp(self):
         self.storage = Storage(":memory:")
+        self.addCleanup(self.storage.close)
         self.practice, self.clock = make_practice(
             PracticeSettings("en", MODE_TIME, 15, "corne-4x6"), self.storage
         )
@@ -91,6 +93,18 @@ class TimeModeTest(unittest.TestCase):
         self.assertEqual(len(self.storage.list_sessions()), 1)
         self.assertFalse(self.practice.tick())  # already completed
 
+    def test_cancel_discards_session_without_saving(self):
+        settings = self.practice.settings
+        self.practice.type_text(self.practice.session.target[:20])
+        self.practice.cancel()
+        self.assertEqual(self.practice.settings, settings)
+        self.assertEqual(self.practice.session.position, 0)
+        self.assertFalse(self.practice.session.started)
+        self.assertIsNone(self.practice.last_result)
+        self.clock.now = 100.0
+        self.assertFalse(self.practice.tick())
+        self.assertEqual(self.storage.list_sessions(), [])
+
     def test_tick_before_typing_does_nothing(self):
         self.clock.now = 100.0
         self.assertFalse(self.practice.tick())
@@ -100,6 +114,7 @@ class TimeModeTest(unittest.TestCase):
 class SaveTest(unittest.TestCase):
     def test_session_without_keystrokes_is_not_saved(self):
         storage = Storage(":memory:")
+        self.addCleanup(storage.close)
         practice, _clock = make_practice(
             PracticeSettings("en", MODE_TIME, 15, "corne-4x6"), storage
         )
@@ -109,6 +124,7 @@ class SaveTest(unittest.TestCase):
 
     def test_storage_failure_is_reported_not_raised(self):
         storage = Storage(":memory:")
+        self.addCleanup(storage.close)
         storage.close()
         practice, _clock = make_practice(
             PracticeSettings("en", MODE_WORDS, 10, "corne-4x6"), storage
@@ -119,9 +135,13 @@ class SaveTest(unittest.TestCase):
 
 
 class HintTest(unittest.TestCase):
+    def setUp(self):
+        self.storage = Storage(":memory:")
+        self.addCleanup(self.storage.close)
+
     def test_hint_for_base_layer_char(self):
         practice, _clock = make_practice(
-            PracticeSettings("en", MODE_WORDS, 10, "corne-4x6")
+            PracticeSettings("en", MODE_WORDS, 10, "corne-4x6"), self.storage
         )
         layer, keys = practice.hint_for("a")
         self.assertEqual(layer, 0)
@@ -129,7 +149,7 @@ class HintTest(unittest.TestCase):
 
     def test_hint_switches_to_layer_of_layer_key(self):
         practice, _clock = make_practice(
-            PracticeSettings("en", MODE_WORDS, 10, "corne-4x6")
+            PracticeSettings("en", MODE_WORDS, 10, "corne-4x6"), self.storage
         )
         layer, keys = practice.hint_for("{")
         self.assertEqual(layer, 1)
@@ -137,7 +157,7 @@ class HintTest(unittest.TestCase):
 
     def test_next_hint_is_empty_after_finish(self):
         practice, _clock = make_practice(
-            PracticeSettings("en", MODE_WORDS, 10, "corne-4x6")
+            PracticeSettings("en", MODE_WORDS, 10, "corne-4x6"), self.storage
         )
         self.assertEqual(
             practice.next_hint(), practice.hint_for(practice.session.target[0])

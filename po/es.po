@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: typeledger\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-25 18:05-0600\n"
-"PO-Revision-Date: 2026-10-25 18:10-0600\n"
+"POT-Creation-Date: 2026-10-25 18:38-0600\n"
+"PO-Revision-Date: 2026-10-25 18:45-0600\n"
 "Last-Translator: ElGuill3\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -23,53 +23,63 @@ msgstr "TypeLedger"
 msgid "Typing practice for split ergonomic keyboards"
 msgstr "Práctica de mecanografía para teclados ergonómicos divididos"
 
-#. Desktop keywords: keep the semicolon-separated list format.
 #: data/io.github.elguill3.TypeLedger.desktop.in:9
 msgid "typing;keyboard;corne;practice;"
 msgstr "mecanografía;teclado;corne;práctica;escritura;"
 
-#: typeledger/window.py:17
+#: typeledger/window.py:18
 msgid "About TypeLedger"
 msgstr "Acerca de TypeLedger"
 
-#: typeledger/window.py:18
+#: typeledger/window.py:19
 msgid "Quit"
 msgstr "Salir"
 
 #: typeledger/window.py:28
+msgid "Practice"
+msgstr "Práctica"
+
+#: typeledger/window.py:31
+msgid "Progress"
+msgstr "Progreso"
+
+#: typeledger/window.py:45
 msgid "History is unavailable; sessions will not be kept."
 msgstr "El historial no está disponible; las sesiones no se guardarán."
 
-#. Short keycap labels: keep them as short as the originals.
-#: typeledger/ui/keyboard_view.py:22
+#: typeledger/ui/chart_view.py:118
+msgid "No sessions in this period"
+msgstr "No hay sesiones en este periodo"
+
+#: typeledger/ui/keyboard_view.py:23
 msgid "Esc"
 msgstr "Esc"
 
-#: typeledger/ui/keyboard_view.py:23
+#: typeledger/ui/keyboard_view.py:24
 msgid "Tab"
 msgstr "Tab"
 
-#: typeledger/ui/keyboard_view.py:24
+#: typeledger/ui/keyboard_view.py:25
 msgid "Bspc"
 msgstr "Retr"
 
-#: typeledger/ui/keyboard_view.py:25
+#: typeledger/ui/keyboard_view.py:26
 msgid "Enter"
 msgstr "Intro"
 
-#: typeledger/ui/keyboard_view.py:26
+#: typeledger/ui/keyboard_view.py:27
 msgid "Space"
 msgstr "Espacio"
 
-#: typeledger/ui/keyboard_view.py:28
+#: typeledger/ui/keyboard_view.py:29
 msgid "Ctrl"
 msgstr "Ctrl"
 
-#: typeledger/ui/keyboard_view.py:29
+#: typeledger/ui/keyboard_view.py:30
 msgid "Alt"
 msgstr "Alt"
 
-#: typeledger/ui/keyboard_view.py:30
+#: typeledger/ui/keyboard_view.py:31
 msgid "Super"
 msgstr "Súper"
 
@@ -81,37 +91,37 @@ msgstr "Inglés"
 msgid "Spanish"
 msgstr "Español"
 
-#: typeledger/ui/practice_page.py:87
+#: typeledger/ui/practice_page.py:91
 msgid "Time"
 msgstr "Tiempo"
 
-#: typeledger/ui/practice_page.py:88
+#: typeledger/ui/practice_page.py:92
 msgid "Words"
 msgstr "Palabras"
 
-#: typeledger/ui/practice_page.py:100
+#: typeledger/ui/practice_page.py:104
 msgid "Text language"
 msgstr "Idioma del texto"
 
-#: typeledger/ui/practice_page.py:107
+#: typeledger/ui/practice_page.py:111
 msgid "Keyboard layout"
 msgstr "Distribución del teclado"
 
-#: typeledger/ui/practice_page.py:112
+#: typeledger/ui/practice_page.py:116
 msgid "Restart"
 msgstr "Reiniciar"
 
-#: typeledger/ui/practice_page.py:124 typeledger/ui/practice_page.py:197
+#: typeledger/ui/practice_page.py:128 typeledger/ui/practice_page.py:201
 #, python-brace-format
 msgid "{seconds} s"
 msgstr "{seconds} s"
 
-#: typeledger/ui/practice_page.py:203
+#: typeledger/ui/practice_page.py:207
 #, python-brace-format
 msgid "{wpm} WPM · {accuracy}% · {progress}"
 msgstr "{wpm} PPM · {accuracy}% · {progress}"
 
-#: typeledger/ui/practice_page.py:226
+#: typeledger/ui/practice_page.py:230
 #, python-brace-format
 msgid ""
 "{wpm} WPM · {accuracy}% accuracy\n"
@@ -120,14 +130,101 @@ msgstr ""
 "{wpm} PPM · {accuracy}% de precisión\n"
 "Bruto: {raw} PPM · Tiempo: {seconds} s"
 
-#: typeledger/ui/practice_page.py:235
+#: typeledger/ui/practice_page.py:239
 msgid "This session could not be saved."
 msgstr "No se pudo guardar esta sesión."
 
-#: typeledger/ui/practice_page.py:236
+#: typeledger/ui/practice_page.py:240
 msgid "Session complete"
 msgstr "Sesión completada"
 
-#: typeledger/ui/practice_page.py:237
+#: typeledger/ui/practice_page.py:241
 msgid "Practice again"
 msgstr "Practicar de nuevo"
+
+#: typeledger/ui/progress_page.py:26
+#, python-format
+msgid "%d day"
+msgid_plural "%d days"
+msgstr[0] "%d día"
+msgstr[1] "%d días"
+
+#: typeledger/ui/progress_page.py:33
+#, python-brace-format
+msgid "{hours} h {minutes} min"
+msgstr "{hours} h {minutes} min"
+
+#: typeledger/ui/progress_page.py:34
+#, python-brace-format
+msgid "{minutes} min"
+msgstr "{minutes} min"
+
+#: typeledger/ui/progress_page.py:55
+msgid "No sessions yet"
+msgstr "Aún no hay sesiones"
+
+#: typeledger/ui/progress_page.py:56
+msgid "Complete a practice session to see your progress here."
+msgstr "Complete una sesión de práctica para ver su progreso aquí."
+
+#: typeledger/ui/progress_page.py:80
+msgid "Daily progress"
+msgstr "Progreso diario"
+
+#: typeledger/ui/progress_page.py:91
+msgid "WPM"
+msgstr "PPM"
+
+#: typeledger/ui/progress_page.py:97
+msgid "Accuracy"
+msgstr "Precisión"
+
+#: typeledger/ui/progress_page.py:102
+msgid "Errors by key"
+msgstr "Errores por tecla"
+
+#: typeledger/ui/progress_page.py:108
+#, python-brace-format
+msgid ""
+"Redder keys have more errors. Characters typed fewer than {count} times are "
+"not counted."
+msgstr ""
+"Las teclas más rojas tienen más errores. No se cuentan los caracteres "
+"escritos menos de {count} veces."
+
+#: typeledger/ui/progress_page.py:123
+msgid "Current streak"
+msgstr "Racha actual"
+
+#: typeledger/ui/progress_page.py:131
+msgid "Sessions"
+msgstr "Sesiones"
+
+#: typeledger/ui/progress_page.py:132
+msgid "Practice time"
+msgstr "Tiempo de práctica"
+
+#: typeledger/ui/progress_page.py:133
+msgid "Best WPM"
+msgstr "Mejor PPM"
+
+#: typeledger/ui/progress_page.py:134
+msgid "WPM, last 7 days"
+msgstr "PPM, últimos 7 días"
+
+#: typeledger/ui/progress_page.py:135
+msgid "Accuracy, last 7 days"
+msgstr "Precisión, últimos 7 días"
+
+#: typeledger/ui/progress_page.py:157
+#, python-brace-format
+msgid "Longest streak: {days}"
+msgstr "Racha más larga: {days}"
+
+#: typeledger/ui/progress_page.py:160
+msgid "Practiced today"
+msgstr "Ya practicó hoy"
+
+#: typeledger/ui/progress_page.py:161
+msgid "Practice today to keep your streak"
+msgstr "Practique hoy para mantener su racha"

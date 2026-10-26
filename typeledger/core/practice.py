@@ -66,6 +66,10 @@ class Practice:
         self.last_result: SessionResult | None = None
         self.save_error: Exception | None = None
 
+    def cancel(self) -> None:
+        """Discard the current session without saving and start a fresh one."""
+        self.restart()
+
     def type_text(self, text: str) -> bool:
         """Feed typed text; returns True when this input completed the session."""
         if self.last_result is not None:

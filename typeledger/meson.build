@@ -15,6 +15,7 @@ python.install_sources(
     'core/keys.py',
     'core/layout.py',
     'core/models.py',
+    'core/progress.py',
     'core/practice.py',
     'core/storage.py',
     'core/text_display.py',
@@ -34,8 +35,10 @@ python.install_sources(
 python.install_sources(
   files(
     'ui/__init__.py',
+    'ui/chart_view.py',
     'ui/keyboard_view.py',
     'ui/practice_page.py',
+    'ui/progress_page.py',
   ),
   subdir: 'typeledger/ui',
 )

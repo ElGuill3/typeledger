@@ -1,7 +1,7 @@
 import gettext
 import locale
 
-from gi.repository import Adw, Gdk, GLib, Gtk
+from gi.repository import Adw, Gdk, GLib, GObject, Gtk
 
 from typeledger.core.keys import special_key_name
 from typeledger.core.layout import available_layouts
@@ -38,6 +38,10 @@ class PracticePage(Gtk.Box):
     """Practice text on top, live stats, and the keyboard layout underneath."""
 
     __gtype_name__ = "TypeLedgerPracticePage"
+    __gsignals__ = {
+        # A session finished, whether or not it could be saved.
+        "session-completed": (GObject.SignalFlags.RUN_FIRST, None, ()),
+    }
 
     def __init__(self, storage, *, settings=None, **kwargs):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=18, **kwargs)
@@ -164,6 +168,20 @@ class PracticePage(Gtk.Box):
         self.refresh()
         self.grab_focus()
 
+    def cancel_running_time_session(self):
+        """Drop a timed session in progress, unsaved; returns True if one was dropped."""
+        practice = self.practice
+        if (
+            practice.settings.mode != MODE_TIME
+            or not practice.session.started
+            or practice.last_result is not None
+        ):
+            return False
+        practice.cancel()
+        self.keyboard.set_pressed(())
+        self.refresh()
+        return True
+
     def refresh(self):
         session = self.practice.session
         lines = wrap_lines(session.target, LINE_WIDTH)
@@ -239,6 +257,7 @@ class PracticePage(Gtk.Box):
         dialog.set_close_response("again")
         dialog.connect("response", lambda *_args: self.restart())
         dialog.present(self)
+        self.emit("session-completed")
 
     # Input
 

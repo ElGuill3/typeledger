@@ -45,6 +45,7 @@ class OpenStorageTest(unittest.TestCase):
         # A regular file where the data directory should be makes mkdir fail.
         with mock.patch.dict(os.environ, {"XDG_DATA_HOME": blocker.name}):
             storage, unavailable = open_storage()
+        self.addCleanup(storage.close)
         self.assertTrue(unavailable)
         self.assertEqual(storage.list_sessions(), [])
         os.unlink(blocker.name)
