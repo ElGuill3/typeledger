@@ -1,0 +1,131 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the typeledger package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: typeledger\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-25 18:05-0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: data/io.github.elguill3.TypeLedger.desktop.in:2
+msgid "TypeLedger"
+msgstr ""
+
+#: data/io.github.elguill3.TypeLedger.desktop.in:3 typeledger/application.py:68
+msgid "Typing practice for split ergonomic keyboards"
+msgstr ""
+
+#: data/io.github.elguill3.TypeLedger.desktop.in:9
+msgid "typing;keyboard;corne;practice;"
+msgstr ""
+
+#: typeledger/window.py:17
+msgid "About TypeLedger"
+msgstr ""
+
+#: typeledger/window.py:18
+msgid "Quit"
+msgstr ""
+
+#: typeledger/window.py:28
+msgid "History is unavailable; sessions will not be kept."
+msgstr ""
+
+#: typeledger/ui/keyboard_view.py:22
+msgid "Esc"
+msgstr ""
+
+#: typeledger/ui/keyboard_view.py:23
+msgid "Tab"
+msgstr ""
+
+#: typeledger/ui/keyboard_view.py:24
+msgid "Bspc"
+msgstr ""
+
+#: typeledger/ui/keyboard_view.py:25
+msgid "Enter"
+msgstr ""
+
+#: typeledger/ui/keyboard_view.py:26
+msgid "Space"
+msgstr ""
+
+#: typeledger/ui/keyboard_view.py:28
+msgid "Ctrl"
+msgstr ""
+
+#: typeledger/ui/keyboard_view.py:29
+msgid "Alt"
+msgstr ""
+
+#: typeledger/ui/keyboard_view.py:30
+msgid "Super"
+msgstr ""
+
+#: typeledger/ui/practice_page.py:34
+msgid "English"
+msgstr ""
+
+#: typeledger/ui/practice_page.py:34
+msgid "Spanish"
+msgstr ""
+
+#: typeledger/ui/practice_page.py:87
+msgid "Time"
+msgstr ""
+
+#: typeledger/ui/practice_page.py:88
+msgid "Words"
+msgstr ""
+
+#: typeledger/ui/practice_page.py:100
+msgid "Text language"
+msgstr ""
+
+#: typeledger/ui/practice_page.py:107
+msgid "Keyboard layout"
+msgstr ""
+
+#: typeledger/ui/practice_page.py:112
+msgid "Restart"
+msgstr ""
+
+#: typeledger/ui/practice_page.py:124 typeledger/ui/practice_page.py:197
+#, python-brace-format
+msgid "{seconds} s"
+msgstr ""
+
+#: typeledger/ui/practice_page.py:203
+#, python-brace-format
+msgid "{wpm} WPM · {accuracy}% · {progress}"
+msgstr ""
+
+#: typeledger/ui/practice_page.py:226
+#, python-brace-format
+msgid ""
+"{wpm} WPM · {accuracy}% accuracy\n"
+"Raw: {raw} WPM · Time: {seconds} s"
+msgstr ""
+
+#: typeledger/ui/practice_page.py:235
+msgid "This session could not be saved."
+msgstr ""
+
+#: typeledger/ui/practice_page.py:236
+msgid "Session complete"
+msgstr ""
+
+#: typeledger/ui/practice_page.py:237
+msgid "Practice again"
+msgstr ""
