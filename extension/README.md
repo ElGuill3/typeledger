@@ -13,7 +13,7 @@ disabling and enabling the extension: the last reminded day is kept in
 the `REMINDER_HOUR` constant in `reminder.js`; there are no settings yet.
 
 - UUID: `typeledger@elguill3.github.io`
-- Supports GNOME Shell 50.
+- Supports GNOME Shell 50 and 51.
 - Reads only the `summary.json` file the app exports, never the SQLite history:
   `~/.local/share/typeledger/summary.json` (or `$XDG_DATA_HOME`) and, for the
   Flatpak build, `~/.var/app/io.github.elguill3.TypeLedger/data/typeledger/summary.json`.

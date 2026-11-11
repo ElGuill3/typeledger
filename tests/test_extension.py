@@ -84,8 +84,8 @@ class MetadataTests(unittest.TestCase):
     def test_uuid_matches_directory(self):
         self.assertEqual(self.metadata["uuid"], EXTENSION_DIR.name)
 
-    def test_targets_gnome_shell_50(self):
-        self.assertEqual(self.metadata["shell-version"], ["50"])
+    def test_targets_gnome_shell_50_and_51(self):
+        self.assertEqual(self.metadata["shell-version"], ["50", "51"])
 
     def test_required_keys(self):
         for key in ("uuid", "name", "description", "shell-version", "url", "gettext-domain"):

@@ -2,5 +2,5 @@
   "uuid": "panel-probe@typeledger.test",
   "name": "TypeLedger panel probe",
   "description": "Test-only helper: measures the TypeLedger Streak indicator inside a throwaway headless GNOME Shell.",
-  "shell-version": ["50"]
+  "shell-version": ["50", "51"]
 }
